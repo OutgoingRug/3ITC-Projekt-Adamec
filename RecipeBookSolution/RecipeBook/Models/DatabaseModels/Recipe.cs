@@ -3,10 +3,10 @@
     public class Recipe
     {
         public int Id { get; set; }
-        public int Title { get; set; }
-        public int Description { get; set; }
-        public int Instructions { get; set; }
-        public int Ingredients { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Instructions { get; set; }
+        public string Ingredients { get; set; }
         public int CategoryId { get; set; }
         public int UserId { get; set; }
         public DateTime CreatedAt { get; set; }

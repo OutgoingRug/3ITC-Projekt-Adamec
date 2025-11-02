@@ -1,7 +1,8 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RecipeBook.Models;
 using RecipeBook.Models.RecipeBook.Models;
+using System.Diagnostics;
 
 namespace RecipeBook.Controllers
 {
@@ -23,9 +24,22 @@ namespace RecipeBook.Controllers
 
         public IActionResult Categories()
         {
-            var users = _dbContext.Users.ToList();
+            var recipes = _dbContext.Recipes
+                                    .Where(zaznam => zaznam.Title.Contains("buchty"))
+                                    .OrderBy(zaznam => zaznam.CreatedAt)
+                                    .ToList();
 
-            return View(users);
+            return View(recipes);
+        }
+
+        public IActionResult Recipes(string recipeName)
+        {
+            var recipes = _dbContext.Recipes
+                                    .Where(zaznam => zaznam.Title.Contains(recipeName))
+                                    .OrderBy(zaznam => zaznam.CreatedAt)
+                                    .ToList();
+
+            return View(recipes);
         }
 
         public IActionResult Privacy()

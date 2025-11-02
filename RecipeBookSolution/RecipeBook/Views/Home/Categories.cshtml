@@ -1,4 +1,4 @@
-﻿@model List<RecipeBook.Models.DatabaseModels.User>
+﻿@model List<RecipeBook.Models.DatabaseModels.Recipe>
 @{
     ViewData["Title"] = "Categories";
 }
@@ -6,8 +6,8 @@
 <strong>test</strong>
 
 <ul>
-    @foreach (var user in Model)
+    @foreach (var recipe in Model)
     {
-        <li>@user.Email</li>
+        <li>@recipe.Title</li>
     }
 </ul>
