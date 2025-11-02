@@ -1,0 +1,93 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Online Kucharka - @ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/RecipeBook.styles.css" asp-append-version="true" />              
+
+</head>
+<body>                                                                       
+    <header class="header">
+        <div class="headerDiv">
+
+            <div class="vyhledavaniParent">
+                <div class="input-container">
+                    <input class="input"
+                           name="text"
+                           type="text"
+                           placeholder="Hledat..." />
+                </div>
+            </div>
+
+            <div class="accountIcon">
+                <a href="/account" data-bs-toggle="tooltip" title="Váš účet">
+                <img src="~/img/Icon - Account.svg"/>
+            </div>
+
+        </div>
+    </header>   
+    
+    <div class="sidebar">
+        <div class="sideNav">
+
+            <a href="/home"
+               data-bs-toggle="tooltip"
+               data-bs-html="true"
+               title="<b></b><span style='color:gray;'>Hlavní stránka</span>">
+                <img src="~/img/Icon - Home.svg" alt="Icon">
+            </a>
+
+            <a href="/home/categories" data-bs-toggle="tooltip" title="Kategorie">
+                <img src="~/img/Icon - Categories.svg" alt="Icon">
+            </a>           
+
+            <a href="/createRecipe" data-bs-toggle="tooltip" title="Vytvořit">
+                <img src="~/img/Icon - Create new.svg" alt="Icon">
+            </a>
+
+            <a href="/bookmarks" data-bs-toggle="tooltip" title="Oblíbené recepty">
+                <img src="~/img/Icon - Favorites.svg" alt="Icon">
+            </a>
+        </div>
+
+
+        <div class="signOut">
+            <a href="/signOut" data-bs-toggle="tooltip" title="Odhlásit se">
+                <img src="~/img/Icon - Sign out.svg" alt="Icon">
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="listHlavniStranky">
+
+        @RenderBody()
+
+    </div>
+
+
+@*     <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div> *@
+    
+    @* <footer class="">
+        <div class="footer">
+            &copy; 2025 - OnlineKucharka - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer> *@    
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>
