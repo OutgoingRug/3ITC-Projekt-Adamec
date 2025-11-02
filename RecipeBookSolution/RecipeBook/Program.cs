@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-//using Microsoft.EntityFrameworkCore.SqlServer;
+using RecipeBook.Models.RecipeBook.Models;
+using System;
+using Microsoft.EntityFrameworkCore.SqlServer;
 
 namespace RecipeBook
 {
@@ -12,6 +14,10 @@ namespace RecipeBook
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddDbContext<DatabaseContext>(options =>
+                   options.UseSqlServer(
+                       builder.Configuration.GetConnectionString("Default")));
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -22,9 +28,7 @@ namespace RecipeBook
                 app.UseHsts();
             }
 
-            //builder.Services.AddDbContext<AppDbContext>(options =>
-            //       options.UseSqlServer(
-            //           builder.Configuration.GetConnectionString("DefaultConnection")));
+            
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

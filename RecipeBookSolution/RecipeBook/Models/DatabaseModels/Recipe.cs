@@ -12,10 +12,10 @@
         public DateTime CreatedAt { get; set; }
 
 
-        public ICollection<Category> Categories { get; set; }
-        public ICollection<Favorite> Favorites { get; set; }
-        public ICollection<Rating> Ratings { get; set; }
-        public ICollection<User> Users { get; set; }
+        //public ICollection<Category> Categories { get; set; }
+        //public ICollection<Favorite> Favorites { get; set; }
+        //public ICollection<Rating> Ratings { get; set; }
+        //public ICollection<User> Users { get; set; }
 
 
 

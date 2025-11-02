@@ -18,50 +18,35 @@
             public DbSet<Favorite> Favorites { get; set; }
             public DbSet<Rating> Ratings { get; set; }
 
-            /* protected override void OnModelCreating(ModelBuilder modelBuilder)
-             {
-                 modelBuilder.Entity<Favorite>()
-                     .HasKey(f => new { f.UserId, f.RecipeId });
 
-                 modelBuilder.Entity<Favorite>()
-                     .HasOne(f => f.User)
-                     .WithMany(u => u.Favorites)
-                     .HasForeignKey(f => f.UserId);
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                modelBuilder.Entity<User>()
+                    .ToTable("User")
+                    .HasKey(u => u.Id);
 
-                 modelBuilder.Entity<Favorite>()
-                     .HasOne(f => f.Recipe)
-                     .WithMany(r => r.Favorites)
-                     .HasForeignKey(f => f.RecipeId);
+                modelBuilder.Entity<Recipe>()
+                    .ToTable("Recipe")
+                    .HasKey(u => u.Id);
 
-                 modelBuilder.Entity<Rating>()
-                     .HasOne(r => r.User)
-                     .WithMany(u => u.Ratings)
-                     .HasForeignKey(r => r.UserId);
+                modelBuilder.Entity<Category>()
+                    .ToTable("Category")
+                    .HasKey(u => u.Id);
 
-                 modelBuilder.Entity<Rating>()
-                     .HasOne(r => r.Recipe)
-                     .WithMany(rec => rec.Ratings)
-                     .HasForeignKey(r => r.RecipeId);
+                modelBuilder.Entity<Favorite>()
+                    .ToTable("Favorite")
+                    .HasKey(u => u.Id);
 
-                 modelBuilder.Entity<Recipe>()
-                     .HasOne(r => r.Category)
-                     .WithMany(c => c.Recipes)
-                     .HasForeignKey(r => r.CategoryId);
+                modelBuilder.Entity<Rating>()
+                    .ToTable("Rating")
+                 .HasKey(u => u.Id);
 
-                 modelBuilder.Entity<Recipe>()
-                     .HasOne(r => r.Author)
-                     .WithMany(u => u.Recipes)
-                     .HasForeignKey(r => r.AuthorId);
-
-                 modelBuilder.Entity<Category>()
-                     .HasOne(c => c.ParentCategory)
-                     .WithMany(c => c.SubCategories)
-                     .HasForeignKey(c => c.ParentCategoryId)
-                     .IsRequired(false);  */
+                base.OnModelCreating(modelBuilder);
+            }
         }
     }
-}
 
+}
 
 
 

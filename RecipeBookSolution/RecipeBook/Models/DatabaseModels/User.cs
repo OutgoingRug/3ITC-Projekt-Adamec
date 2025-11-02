@@ -10,8 +10,8 @@ namespace RecipeBook.Models.DatabaseModels
         public DateTime CreatedAt { get; set; }
 
 
-        public ICollection<Recipe> Recipes { get; set; }
-        public ICollection<Favorite> Favorites { get; set; }
-        public ICollection<Rating> Ratings { get; set; }
+        //public ICollection<Recipe> Recipes { get; set; }
+        //public ICollection<Favorite> Favorites { get; set; }
+        //public ICollection<Rating> Ratings { get; set; }
     }
 }

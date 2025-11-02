@@ -2,13 +2,14 @@
 {
     public class Favorite
     {
-        public int user_id { get; set; }
-        public int recipe_id { get; set; }
+        public int Id { get; set; }
+        public int UserId { get; set; }
+        public int RecipeId { get; set; }
         public DateTime CreatedAt { get; set; }
 
 
 
-        public ICollection<User> Users { get; set; }
-        public ICollection<Recipe> Recipes { get; set; }
+        //public ICollection<User> Users { get; set; }
+        //public ICollection<Recipe> Recipes { get; set; }
     }
 }
