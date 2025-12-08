@@ -32,17 +32,39 @@ namespace RecipeBook.Controllers
             return View(recipes);
         }
 
-        public IActionResult Recipes(string recipeName)
+        public IActionResult RecipeList()
         {
             var recipes = _dbContext.Recipes
-                                    .Where(zaznam => zaznam.Title.Contains(recipeName))
-                                    .OrderBy(zaznam => zaznam.CreatedAt)
+                                    .OrderBy(zaznam => zaznam.Title)
                                     .ToList();
 
             return View(recipes);
         }
 
+        public IActionResult CreateRecipe()
+        {
+                      return View();
+        }
+
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult Bookmarks()
+        {
+            return View();
+        }
+        public IActionResult Account()
+        {
+            return View();
+        }
+        public IActionResult SignOut()
+        {
+            return View();
+        }
+
+        public IActionResult RecipeDetail()
         {
             return View();
         }

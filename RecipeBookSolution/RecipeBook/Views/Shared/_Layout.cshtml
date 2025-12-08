@@ -16,7 +16,7 @@
 
             <div class="vyhledavaniParent">
                 <div class="input-container">
-                    <input class="input"
+                    <input class="vyhledavaniReceptu"
                            name="text"
                            type="text"
                            placeholder="Hledat..." />
@@ -24,8 +24,9 @@
             </div>
 
             <div class="accountIcon">
-                <a href="/account" data-bs-toggle="tooltip" title="Váš účet"></a>
-                <img src="~/img/Icon - Account.svg"/>
+                <a href="/home/Account" data-bs-toggle="tooltip" title="Váš účet">
+                    <img src="~/img/Icon - Account.svg" alt="Icon">
+                </a>
             </div>
 
         </div>
@@ -45,18 +46,18 @@
                 <img src="~/img/Icon - Categories.svg" alt="Icon">
             </a>           
 
-            <a href="/createRecipe" data-bs-toggle="tooltip" title="Vytvořit">
+            <a href="/home/CreateRecipe" data-bs-toggle="tooltip" title="Vytvořit recept">
                 <img src="~/img/Icon - Create new.svg" alt="Icon">
             </a>
 
-            <a href="/bookmarks" data-bs-toggle="tooltip" title="Oblíbené recepty">
+            <a href="/home/Bookmarks" data-bs-toggle="tooltip" title="Oblíbené recepty">
                 <img src="~/img/Icon - Favorites.svg" alt="Icon">
             </a>
         </div>
 
 
         <div class="signOut">
-            <a href="/signOut" data-bs-toggle="tooltip" title="Odhlásit se">
+            <a href="/home/SignOut" data-bs-toggle="tooltip" title="Odhlásit se">
                 <img src="~/img/Icon - Sign out.svg" alt="Icon">
             </a>
 
@@ -64,7 +65,7 @@
 
     </div>
 
-    <div class="listHlavniStranky">
+    <div class="pouzitelnyView">
 
         @RenderBody()
 

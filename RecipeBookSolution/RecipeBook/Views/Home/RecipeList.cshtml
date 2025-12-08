@@ -1,0 +1,47 @@
+﻿@model List<RecipeBook.Models.DatabaseModels.Recipe>
+@{
+    ViewData["Title"] = "RecipeList";
+}
+
+
+<div class="recipeGrid">
+
+
+@for (int i = 0; i < 17; i++)
+{
+    <div class="recipeCard">
+
+            <div class="recipeCardImage">
+        
+            </div>
+
+        <div class="recipeCardContent">
+
+            <div class="recipeCardCategory">
+                <h6>Kategorie</h6>
+            </div>
+
+            <div class="recipeCardName">
+                <h5>Nazev</h5>
+            </div>
+
+            <div class="recipeCardCreator">
+                <h6>Autor</h6>
+            </div>
+
+        </div>
+
+    </div>
+}
+
+</div>
+
+
+
+
+@*  <ul>
+    @foreach (var recipe in Model)
+    {
+        <li>@recipe.Title</li>
+    }
+</ul>  *@

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-const input = document.querySelector(".input");
+const input = document.querySelector(".vyhledavaniReceptu");
 
 input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
@@ -22,4 +22,31 @@ input.addEventListener("keydown", (e) => {
             input.classList.remove("flash");
         }, 200); //200 milisekund
     }
+});
+
+
+
+//const button = document.querySelector(".button-confirm");
+
+//button.addEventListener("click", () => {
+//    button.classList.add("flash");
+
+//    setTimeout(() => {
+//        button.classList.remove("flash");
+//    }, 200);
+//});
+
+
+
+const button = document.querySelector(".button-confirm");
+
+button.addEventListener("click", (e) => {
+    e.preventDefault(); // zastavim aby se to hned submitnulo
+
+    button.classList.add("flash");
+
+    setTimeout(() => {
+        button.classList.remove("flash");
+        button.closest("form").submit(); // submitnu formular az po animaci
+    }, 200);
 });
