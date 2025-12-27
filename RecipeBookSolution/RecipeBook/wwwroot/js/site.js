@@ -20,7 +20,7 @@ input.addEventListener("keydown", (e) => {
         input.classList.add("flash");
         setTimeout(() => {
             input.classList.remove("flash");
-        }, 200); //200 milisekund
+        }, 200); //v milisekundach
     }
 });
 

@@ -24,17 +24,18 @@ namespace RecipeBook.Controllers
 
         public IActionResult Categories()
         {
-            var recipes = _dbContext.Recipes
-                                    .Where(zaznam => zaznam.Title.Contains("buchty"))
-                                    .OrderBy(zaznam => zaznam.CreatedAt)
+            var categories = _dbContext.Categories
+                                    .Where(zaznam => zaznam.ParentCategoryId == null)
+                                    .OrderBy(zaznam => zaznam.Name)
                                     .ToList();
 
-            return View(recipes);
+            return View(categories);
         }
 
-        public IActionResult RecipeList()
+        public IActionResult RecipeList(int id)    //id je kategorie
         {
-            var recipes = _dbContext.Recipes
+            var recipes = _dbContext.Recipes.Include(x => x.Category)
+                                    .Where(zaznam => zaznam.CategoryId == id)
                                     .OrderBy(zaznam => zaznam.Title)
                                     .ToList();
 
@@ -43,7 +44,7 @@ namespace RecipeBook.Controllers
 
         public IActionResult CreateRecipe()
         {
-                      return View();
+            return View();
         }
 
         public IActionResult Privacy()
@@ -64,9 +65,11 @@ namespace RecipeBook.Controllers
             return View();
         }
 
-        public IActionResult RecipeDetail()
+        public IActionResult RecipeDetail(int id)
         {
-            return View();
+            var recipe = _dbContext.Recipes.Where(r => r.Id == id).FirstOrDefault();
+
+            return View(recipe);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

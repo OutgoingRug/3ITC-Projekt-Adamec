@@ -1,6 +1,27 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-                                  <strong>test</strong>
+﻿@model RecipeBook.Models.DatabaseModels.Recipe
+
+<div class="recipeDetailLeft">
+
+    <div class="recipeDetailImage">
+        <strong>Obrazek...</strong>
+    </div>
+
+    <div class="recipeDetailDescription">
+        <strong>@Html.Raw(@Model.Description?.Replace(Environment.NewLine, "<br/>"))</strong>
+    </div>
+
+    <div class="recipeDetailInfo">
+        <strong>Info...</strong>
+    </div>
+</div>
+
+
+<div class="recipeDetailPart">
+    <strong>@Html.Raw(Model.Ingredients?.Replace(Environment.NewLine, "<br/>"))</strong>
+</div>
+
+<div class="recipeDetailPart">
+    <strong>@Html.Raw(Model.Instructions?.Replace(Environment.NewLine, "<br/>"))</strong>
+</div>
+
+

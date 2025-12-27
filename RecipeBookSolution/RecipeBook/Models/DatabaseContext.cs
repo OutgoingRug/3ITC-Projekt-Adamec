@@ -21,25 +21,37 @@
 
             protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
-                modelBuilder.Entity<User>()
-                    .ToTable("User")
-                    .HasKey(u => u.Id);
+                modelBuilder.Entity<User>(entity =>
+                {
+                    entity.ToTable("User");
+                    entity.HasKey(u => u.Id);
+                });
 
-                modelBuilder.Entity<Recipe>()
-                    .ToTable("Recipe")
-                    .HasKey(u => u.Id);
+                modelBuilder.Entity<Recipe>(entity =>
+                {
+                    entity.ToTable("Recipe");
+                    entity.HasKey(u => u.Id);
 
-                modelBuilder.Entity<Category>()
-                    .ToTable("Category")
-                    .HasKey(u => u.Id);
+                    entity.HasOne("Category");
+                });
 
-                modelBuilder.Entity<Favorite>()
-                    .ToTable("Favorite")
-                    .HasKey(u => u.Id);
+                modelBuilder.Entity<Category>(entity =>
+                {
+                    entity.ToTable("Category");
+                    entity.HasKey(u => u.Id);
+                });
 
-                modelBuilder.Entity<Rating>()
-                    .ToTable("Rating")
-                 .HasKey(u => u.Id);
+                modelBuilder.Entity<Favorite>(entity =>
+                {
+                    entity.ToTable("Favorite");
+                    entity.HasKey(u => u.Id);
+                });
+
+                modelBuilder.Entity<Rating>(entity =>
+                {
+                    entity.ToTable("Rating");
+                    entity.HasKey(u => u.Id);
+                });
 
                 base.OnModelCreating(modelBuilder);
             }

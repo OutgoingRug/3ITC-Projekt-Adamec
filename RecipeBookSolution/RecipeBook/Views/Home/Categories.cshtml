@@ -1,13 +1,22 @@
-﻿@model List<RecipeBook.Models.DatabaseModels.Recipe>
+﻿@model List<RecipeBook.Models.DatabaseModels.Category>
 @{
     ViewData["Title"] = "Categories";
 }
 
-<strong>test</strong>
+<div>
 
-<ul>
-    @foreach (var recipe in Model)
-    {
-        <li>@recipe.Title</li>
-    }
-</ul>
+
+    <h3>Kategorie receptů</h3>
+
+
+    <div>
+        <ul>
+            @foreach (var item in Model)
+            {
+                <li>
+                    <a href="/home/recipelist/@item.Id">@item.Name</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

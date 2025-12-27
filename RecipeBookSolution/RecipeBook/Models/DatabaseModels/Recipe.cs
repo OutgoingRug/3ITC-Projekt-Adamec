@@ -1,4 +1,6 @@
-﻿namespace RecipeBook.Models.DatabaseModels
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace RecipeBook.Models.DatabaseModels
 {
     public class Recipe
     {
@@ -7,20 +9,18 @@
         public string Description { get; set; }
         public string Instructions { get; set; }
         public string Ingredients { get; set; }
-        public int? CategoryId { get; set; }
-        public int? UserId { get; set; }
         public DateTime? CreatedAt { get; set; }
 
 
-        //public ICollection<Category> Categories { get; set; }
-        //public ICollection<Favorite> Favorites { get; set; }
-        //public ICollection<Rating> Ratings { get; set; }
-        //public ICollection<User> Users { get; set; }
+        [ForeignKey("User")]
+        public int? UserId { get; set; }
+        public User User { get; set; }
 
 
+        [ForeignKey("Category")]
+        public int? CategoryId { get; set; }
+        public Category Category { get; set; }
 
 
-
-        //public User User { get; set; }
     }
 }
