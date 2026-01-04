@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RecipeBook.Models.DatabaseModels
 {
@@ -14,11 +15,15 @@ namespace RecipeBook.Models.DatabaseModels
 
         [ForeignKey("User")]
         public int? UserId { get; set; }
+
+        [ValidateNever]
         public User User { get; set; }
 
 
         [ForeignKey("Category")]
         public int? CategoryId { get; set; }
+
+        [ValidateNever]
         public Category Category { get; set; }
 
 

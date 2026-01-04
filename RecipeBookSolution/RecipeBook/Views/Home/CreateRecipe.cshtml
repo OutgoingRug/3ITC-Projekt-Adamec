@@ -1,33 +1,79 @@
-﻿@model List<RecipeBook.Models.DatabaseModels.Recipe>
+﻿@model RecipeBook.Models.DatabaseModels.Recipe
 @{
     ViewData["Title"] = "Create Recipe";
 }
 
+@using (Html.BeginForm("CreateRecipe", "Home", FormMethod.Post, new { @class = "no-layout-form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
 
-<div class="recipeDetailLeft">
+    <div class="recipeDetailLeft">
 
-    <div class="recipeDetailImage">
-        <strong>Obrazek...</strong>
+        <div class="recipeDetailInfo">
+
+            <div class="nameAndCategory">
+                <div class="createName">
+                    <h3>
+                        <strong>Název</strong>
+                    </h3>
+                    @Html.TextBoxFor(model => model.Title)
+                </div>
+
+                <div class="createCategory">
+                    <h3>
+                        <strong>Kategorie</strong>
+                    </h3>
+                    @Html.DropDownListFor(model => model.CategoryId, (SelectList)ViewBag.CategoryList)
+                </div>
+            </div>
+        </div>
+
+        <div class="recipeDetailImage">
+            <strong>Obrazek...</strong>
+            <div>
+                <input type="file" name="image" id="image" accept=".jpg" />
+            </div>
+        </div>
+
+        <div class="recipeDetailDescription recipeDetailDescriptionCreateRecipe">
+            <div>
+                <h3>
+                    <strong>Popis</strong>
+                </h3>
+            </div>
+            <div class="recipeDetailDescriptionTextBoxContainer">@Html.TextAreaFor(model => model.Description, new { @class = "textArea" }) </div>
+        </div>
+
     </div>
 
-    <div class="recipeDetailDescription">
-        <strong>Popisek...</strong>
+
+    <div class="recipeDetailPart">
+        <h3>
+            <strong>Ingredience</strong>
+        </h3>
+        @Html.TextAreaFor(model => model.Ingredients, new { @class = "textArea" })
     </div>
 
-    <div class="recipeDetailInfo">
-        <strong>Info...</strong>
+    <div class="recipeDetailPart">
+        <h3>
+            <strong>Postup</strong>
+        </h3>
+        @Html.TextAreaFor(model => model.Instructions, new { @class = "textArea" })
     </div>
-</div>
 
+    <div>
+        <button type="submit" class="createRecipeButton">Vytvořit</button>
+    </div>
 
-<div class="recipeDetailPart">
-    <strong>Postup...</strong>
-</div>
+}
 
-<div class="recipeDetailPart">
-    <strong>Ingredience...</strong>
-</div>
+@Html.ValidationSummary()
 
+<partial name="_ValidationScriptsPartial" />
 
-
+@section Scripts
+{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}
 

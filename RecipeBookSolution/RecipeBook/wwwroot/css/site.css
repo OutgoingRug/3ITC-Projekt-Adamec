@@ -398,6 +398,18 @@ header {
     font-family: "JetBrainsMonoNL NF", monospace;
 }
 
+.no-layout-form {
+    display: contents;
+}
+
+@supports not (display: contents) {
+    .no-layout-form {
+        display: block;
+        margin: 0;
+        padding: 0;
+    }
+}
+
 .recipeCardCategory {
     position: absolute;
     bottom: 0;
@@ -446,14 +458,16 @@ header {
     width: 1000px;
     display: flex;
     flex-direction: column;
+    font-family: "JetBrainsMonoNL NF", monospace;
+    overflow-y: auto;
 }
 
 .recipeDetailLeft {
     margin: 0px 30px 0px 30px;
-    padding: 5px;
     width: 1000px;
     display: flex;
     flex-direction: column;
+    font-family: "JetBrainsMonoNL NF", monospace;
 }
 
 .recipeDetailImage {
@@ -462,19 +476,89 @@ header {
     height: 600px;
     border: 2px solid black;
     margin-bottom: 40px;
+    font-family: "JetBrainsMonoNL NF", monospace;
 }
+
+    .recipeDetailImage img, .recipeCardImage img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 
 .recipeDetailDescription {
     width: 100%;
-    height: 600px;
+    height: 100%;
     border: 2px solid black;
-    margin-bottom: 40px;
     padding: 5px;
+    font-family: "JetBrainsMonoNL NF", monospace;
+    overflow-y: auto;
+}
+
+.recipeDetailDescriptionCreateRecipe {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; 
+    align-items: stretch; 
+    overflow-y: auto;
+}
+
+    .recipeDetailDescriptionCreateRecipe > div {
+        display: block;
+        width: 100%;
+        clear: both;
+    }
+
+.recipeDetailDescriptionTextBoxContainer {
+    height: 100%;
 }
 
 .recipeDetailInfo {
     width: 100%;
     height: 200px;
-    border: 2px solid black;
+    margin-bottom: 40px;
     padding: 5px;
+    font-family: "JetBrainsMonoNL NF", monospace;
+}
+
+.textArea {
+    height: 100%;
+    width: 100%;
+    border: none;
+    resize: none;
+    background-color: #F2EEE9;
+    font-family: "JetBrainsMonoNL NF", monospace;
+    overflow-y: auto;
+    /*transition: border-color 0.3s ease-in-out;*/
+}
+
+.textArea:focus {
+    outline: none;
+    border: 2px solid #ae74cc;
+}
+
+.input-validation-error {
+    background-color: rgba(255, 0, 0, 0.5);
+}
+
+.nameAndCategory {
+    display: flex;
+    gap: 50px;
+}
+
+.createName {
+    background-color: #F2EEE9;
+}
+
+.createRecipeButton {
+    margin-top: 15px;
+    background-color: #ae74cc;
+    color: white;
+    padding: 10px 20px 10px 20px;
+    border: 2px solid black;
+    box-shadow: 4px 4px 0 #000;
+    font-family: "JetBrainsMonoNL NF", monospace;
+}
+.createRecipeButton:active {
+    box-shadow: 0px 0px 0 #000;
+    transform: translate(4px, 4px);
 }

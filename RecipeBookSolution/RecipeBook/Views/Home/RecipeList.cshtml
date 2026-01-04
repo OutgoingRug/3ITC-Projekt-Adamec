@@ -16,12 +16,12 @@
             <div class="recipeCardImage">
                 @{
 
-                    var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "img", "recipes", item.Id.ToString());
+                    var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", item.Id.ToString() + ".jpg");
                     var imgExists = System.IO.File.Exists(imgPhysicalPath);
                 }
                 @if (imgExists)
                 {
-                    <img src="@Url.Content($"~/img/recipes/{item.Id}.svg")" alt="Recipe image" />
+                    <img src="@Url.Content($"~/images/recipes/{item.Id}.jpg")" alt="Recipe image" />
                 }
                 else
                 {

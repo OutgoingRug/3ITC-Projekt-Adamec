@@ -1,27 +1,46 @@
 ﻿@model RecipeBook.Models.DatabaseModels.Recipe
+@using Microsoft.AspNetCore.Hosting
+@inject IWebHostEnvironment env
 
 <div class="recipeDetailLeft">
 
-    <div class="recipeDetailImage">
-        <strong>Obrazek...</strong>
+    <div class="recipeDetailInfo">
+        <h2>@Model.Title</h2>
     </div>
+
+    <div class="recipeDetailImage">
+        @{
+
+            var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", Model.Id.ToString() + ".jpg");
+            var imgExists = System.IO.File.Exists(imgPhysicalPath);
+        }
+        @if (imgExists)
+        {
+            <img src="@Url.Content($"~/images/recipes/{Model.Id}.jpg")" alt="Recipe image" />
+        }
+        else
+        {
+            <img src="~/img/food.png" />
+        }
+    </div>                                                                      
 
     <div class="recipeDetailDescription">
         <strong>@Html.Raw(@Model.Description?.Replace(Environment.NewLine, "<br/>"))</strong>
     </div>
 
-    <div class="recipeDetailInfo">
-        <strong>Info...</strong>
-    </div>
+    
 </div>
 
 
 <div class="recipeDetailPart">
+    <h3>Ingredience</h3>
     <strong>@Html.Raw(Model.Ingredients?.Replace(Environment.NewLine, "<br/>"))</strong>
 </div>
 
 <div class="recipeDetailPart">
+    <h3>Postup</h3>
     <strong>@Html.Raw(Model.Instructions?.Replace(Environment.NewLine, "<br/>"))</strong>
 </div>
+
 
 
