@@ -28,9 +28,10 @@
             </div>
         </div>
 
-        <div class="recipeDetailImage">
-            <strong>Obrazek...</strong>
-            <div>
+        <div class="recipeCreateImage">
+            <div class="acceptImage">
+                <span class="upload-text">Click or Drop Image Here</span>
+
                 <input type="file" name="image" id="image" accept=".jpg" />
             </div>
         </div>
@@ -42,6 +43,10 @@
                 </h3>
             </div>
             <div class="recipeDetailDescriptionTextBoxContainer">@Html.TextAreaFor(model => model.Description, new { @class = "textArea" }) </div>
+        </div>
+
+        <div class="createRecipeButtonDiv">
+            <button type="submit" class="createRecipeButton">Vytvořit</button>
         </div>
 
     </div>
@@ -61,15 +66,12 @@
         @Html.TextAreaFor(model => model.Instructions, new { @class = "textArea" })
     </div>
 
-    <div>
-        <button type="submit" class="createRecipeButton">Vytvořit</button>
-    </div>
 
 }
 
-@Html.ValidationSummary()
+@* @Html.ValidationSummary()
 
-<partial name="_ValidationScriptsPartial" />
+<partial name="_ValidationScriptsPartial" /> *@
 
 @section Scripts
 {

@@ -52,7 +52,7 @@ namespace RecipeBook.Controllers
         private SelectList GeMainCategoriesSelectList()
         {
             var seznamKategorií = _dbContext.Categories
-                                        .Where(c => c.ParentCategoryId == null)
+                                        .Where(c => c.ParentCategoryId == null)     
                                         .OrderBy(c => c.Name)
                                         .ToList();
             return new SelectList(seznamKategorií, "Id", "Name");
@@ -90,7 +90,7 @@ namespace RecipeBook.Controllers
 
             if (!ModelState.IsValid)
             {
-                return View(recipe);
+                return View(recipe);                                                        
             }
 
             // duplikat?

@@ -5,7 +5,7 @@
 <div class="recipeDetailLeft">
 
     <div class="recipeDetailInfo">
-        <h2>@Model.Title</h2>
+        <h3>@Model.Title</h3>
     </div>
 
     <div class="recipeDetailImage">
@@ -20,12 +20,16 @@
         }
         else
         {
-            <img src="~/img/food.png" />
+            <img src="~/img/food-wide.png" />
         }
     </div>                                                                      
 
     <div class="recipeDetailDescription">
-        <strong>@Html.Raw(@Model.Description?.Replace(Environment.NewLine, "<br/>"))</strong>
+        <strong>@Html.Raw(@Model.Description?.Replace(Environment.NewLine, "<br/>").Replace("\r\n", "<br/>"))</strong>
+    </div>
+
+    <div class="recipeDetailInfo2">
+     
     </div>
 
     
@@ -34,12 +38,12 @@
 
 <div class="recipeDetailPart">
     <h3>Ingredience</h3>
-    <strong>@Html.Raw(Model.Ingredients?.Replace(Environment.NewLine, "<br/>"))</strong>
+    <strong>@Html.Raw(Model.Ingredients?.Replace(Environment.NewLine, "<br/>").Replace("\r\n", "<br/>"))</strong>
 </div>
 
 <div class="recipeDetailPart">
     <h3>Postup</h3>
-    <strong>@Html.Raw(Model.Instructions?.Replace(Environment.NewLine, "<br/>"))</strong>
+    <strong>@Html.Raw(Model.Instructions?.Replace(Environment.NewLine, "<br/>").Replace("\r\n", "<br/>"))</strong>
 </div>
 
 
