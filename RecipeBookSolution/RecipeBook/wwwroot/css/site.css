@@ -23,6 +23,16 @@ body {
     background-color: #F2EEE9;
 }
 
+/* Reserve space for validation errors and subtitle so showing errors doesn't resize the form */
+.loginForm #errorBox {
+    min-height: 24px; /* reserve one line for error messages */
+}
+
+.loginForm .title span {
+    display: inline-block;
+    min-height: 20px; /* reserve subtitle height so text changes don't shift layout */
+}
+
 
 footer {
     background-color: #303030;
@@ -240,7 +250,8 @@ header {
     border: 2px solid var(--main-color);
     box-shadow: 4px 4px var(--main-color);
     font-family: "JetBrainsMonoNL NF", monospace;
-    width: min(320px, 90vw);
+    /* make the auth box slightly wider so buttons and text fit comfortably */
+    width: min(380px, 90vw);
     box-sizing: border-box;
     background-color: #F2EEE9;
 }
@@ -356,7 +367,68 @@ header {
     left: 50vw;
     top: 50vh;
     transform: translate(-50%, -50%);
-    width: max-content;
+    width: min(380px, 90vw);
+}
+/* Layout for the two buttons inside the auth form */
+.button-row {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between; /* left toggle, right submit */
+    align-items: center;
+    margin-top: 12px;
+    width: 100%;
+}
+
+.button-row .button-confirm {
+    margin: 0;
+    width: 48%; /* two buttons take roughly half each */
+}
+
+.button-row .toggle-btn {
+    background: #eee;
+    color: #000;
+}
+
+/* Modal for validation messages */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-box {
+    background: #F2EEE9;
+    border: 2px solid #000;
+    box-shadow: 8px 8px 0 #000;
+    padding: 16px;
+    max-width: 90vw;
+    width: 420px;
+    box-sizing: border-box;
+}
+
+.modal-box .modal-title {
+    font-weight: 900;
+    margin-bottom: 8px;
+}
+
+.modal-box .modal-body {
+    margin-bottom: 12px;
+}
+
+.modal-box .modal-close {
+    display: inline-block;
+    padding: 6px 10px;
+    border: 2px solid #000;
+    background: white;
+    cursor: pointer;
+    font-weight: 700;
 }
 /* Konec formy pro prihlaseni */
 

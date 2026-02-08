@@ -14,6 +14,14 @@ namespace RecipeBook
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            // Cookie authentication
+            builder.Services.AddAuthentication(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Home/Account";
+                    options.LogoutPath = "/Home/SignOut";
+                });
+
             builder.Services.AddDbContext<DatabaseContext>(options =>
                    options.UseSqlServer(
                        builder.Configuration.GetConnectionString("Default")));
@@ -35,6 +43,7 @@ namespace RecipeBook
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

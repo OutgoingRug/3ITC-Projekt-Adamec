@@ -4,10 +4,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using RecipeBook.Models;
+using RecipeBook.Models.DatabaseModels;
 using RecipeBook.Models.RecipeBook.Models;
+using RecipeBook.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace RecipeBook.Controllers
 {
@@ -149,6 +157,166 @@ namespace RecipeBook.Controllers
         public IActionResult SignOut()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (model == null || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+            {
+                var msg = "Vyplňte email i heslo.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return BadRequest(new { success = false, errors = new[] { msg }, email = model?.Email });
+                }
+
+                ViewBag.LoginError = msg;
+                ViewData["Email"] = model?.Email;
+                // indicate to view that server set errors so modal should show
+                TempData["ShowServerErrors"] = "true";
+                TempData["ServerErrors"] = JsonSerializer.Serialize(new[] { msg });
+                return View("Account");
+            }
+
+            var user = _dbContext.Users.FirstOrDefault(u => u.Email == model.Email);
+            if (user == null)
+            {
+                var msg = "Uživatel s tímto emailem neexistuje.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return BadRequest(new { success = false, errors = new[] { msg }, email = model.Email });
+                }
+
+                ViewBag.LoginError = msg;
+                ViewData["Email"] = model.Email;
+                TempData["ShowServerErrors"] = "true";
+                TempData["ServerErrors"] = JsonSerializer.Serialize(new[] { msg });
+                return View("Account");
+            }
+
+            var hasher = new PasswordHasher<User>();
+            var result = hasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
+            if (result != PasswordVerificationResult.Success)
+            {
+                var msg = "Neplatné heslo.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return BadRequest(new { success = false, errors = new[] { msg }, email = model.Email });
+                }
+
+                ViewBag.LoginError = msg;
+                ViewData["Email"] = model.Email;
+                TempData["ShowServerErrors"] = "true";
+                TempData["ServerErrors"] = JsonSerializer.Serialize(new[] { msg });
+                return View("Account");
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Ok(new { success = true, redirect = Url.Action("Index") });
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (model == null || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+            {
+                var msg = "Vyplňte email a heslo.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return BadRequest(new { success = false, errors = new[] { msg }, email = model?.Email });
+                }
+
+                ViewBag.RegisterError = msg;
+                ViewData["Email"] = model?.Email;
+                TempData["ShowServerErrors"] = "true";
+                return View("Account");
+            }
+
+            if (model.Password != model.ConfirmPassword)
+            {
+                var msg = "Hesla se neshodují.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return BadRequest(new { success = false, errors = new[] { msg }, email = model.Email });
+                }
+
+                ViewBag.RegisterError = msg;
+                ViewData["Email"] = model.Email;
+                ViewData["ConfirmPassword"] = model.ConfirmPassword;
+                TempData["ShowServerErrors"] = "true";
+                return View("Account");
+            }
+
+            var exists = _dbContext.Users.Any(u => u.Email == model.Email);
+            if (exists)
+            {
+                var msg = "Uživatel s tímto emailem již existuje.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return BadRequest(new { success = false, errors = new[] { msg }, email = model.Email });
+                }
+
+                ViewBag.RegisterError = msg;
+                ViewData["Email"] = model.Email;
+                TempData["ShowServerErrors"] = "true";
+                return View("Account");
+            }
+
+            var user = new User
+            {
+                Email = model.Email,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            var hasher = new PasswordHasher<User>();
+            user.PasswordHash = hasher.HashPassword(user, model.Password);
+
+            _dbContext.Users.Add(user);
+            _dbContext.SaveChanges();
+
+            // sign in
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Ok(new { success = true, redirect = Url.Action("Index") });
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SignOutPost()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index");
         }
 
         public IActionResult RecipeDetail(int id)

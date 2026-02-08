@@ -9,22 +9,168 @@
 <div style="margin: auto;">
     <div class="loginFormWrapper">
 
-        <form class="loginForm">
-            <div class="title">Vítejte,<br><span>přihlašte se pro pokračování</span></div>
-            <input class="accountInput" name="email" placeholder="Email" type="email">
-            <input class="accountInput" name="password" placeholder="Password" type="password">
-            @* <div class="login-with">
-        <div class="button-log"><b>t</b></div>
-        <div class="button-log">
-            <svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="56.6934px" viewBox="0 0 56.6934 56.6934" version="1.1" style="enable-background:new 0 0 56.6934 56.6934;" id="Layer_1" height="56.6934px" class="icon"><path d="M51.981,24.4812c-7.7173-0.0038-15.4346-0.0019-23.1518-0.001c0.001,3.2009-0.0038,6.4018,0.0019,9.6017  c4.4693-0.001,8.9386-0.0019,13.407,0c-0.5179,3.0673-2.3408,5.8723-4.9258,7.5991c-1.625,1.0926-3.492,1.8018-5.4168,2.139  c-1.9372,0.3306-3.9389,0.3729-5.8713-0.0183c-1.9651-0.3921-3.8409-1.2108-5.4773-2.3649  c-2.6166-1.8383-4.6135-4.5279-5.6388-7.5549c-1.0484-3.0788-1.0561-6.5046,0.0048-9.5805  c0.7361-2.1679,1.9613-4.1705,3.5708-5.8002c1.9853-2.0324,4.5664-3.4853,7.3473-4.0811c2.3812-0.5083,4.8921-0.4113,7.2234,0.294  c1.9815,0.6016,3.8082,1.6874,5.3044,3.1163c1.5125-1.5039,3.0173-3.0164,4.527-4.5231c0.7918-0.811,1.624-1.5865,2.3908-2.4196  c-2.2928-2.1218-4.9805-3.8274-7.9172-4.9056C32.0723,4.0363,26.1097,3.995,20.7871,5.8372  C14.7889,7.8907,9.6815,12.3763,6.8497,18.0459c-0.9859,1.9536-1.7057,4.0388-2.1381,6.1836  C3.6238,29.5732,4.382,35.2707,6.8468,40.1378c1.6019,3.1768,3.8985,6.001,6.6843,8.215c2.6282,2.0958,5.6916,3.6439,8.9396,4.5078  c4.0984,1.0993,8.461,1.0743,12.5864,0.1355c3.7284-0.8581,7.256-2.6397,10.0725-5.24c2.977-2.7358,5.1006-6.3403,6.2249-10.2138  C52.5807,33.3171,52.7498,28.8064,51.981,24.4812z"></path></svg>
-        </div>
-        <div class="button-log">
-            <svg class="icon" height="56.693px" id="Layer_1" version="1.1" viewBox="0 0 56.693 56.693" width="56.693px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M40.43,21.739h-7.645v-5.014c0-1.883,1.248-2.322,2.127-2.322c0.877,0,5.395,0,5.395,0V6.125l-7.43-0.029  c-8.248,0-10.125,6.174-10.125,10.125v5.518h-4.77v8.53h4.77c0,10.947,0,24.137,0,24.137h10.033c0,0,0-13.32,0-24.137h6.77  L40.43,21.739z"></path></svg>
-        </div>
-    </div> *@
-            <button class="button-confirm">Pokračovat →</button>
+        @{
+            var initialMode = ViewBag.RegisterError != null ? "register" : "login";
+        }
+
+        <form id="authForm" class="loginForm" method="post" action="@Url.Action("Login", "Home")" novalidate>
+            <div class="title" id="formTitle">Vítejte,<br><span id="formSubtitle">přihlašte se pro pokračování</span></div>
+            @Html.AntiForgeryToken()
+
+            <input class="accountInput" id="Email" name="Email" placeholder="Email" type="email" value="@(ViewData["Email"] ?? String.Empty)" />
+            <input class="accountInput" id="Password" name="Password" placeholder="Heslo" type="password" />
+
+            <input class="accountInput" id="ConfirmPassword" name="ConfirmPassword" placeholder="Potvrzení hesla" type="password" style="visibility:hidden" value="@(ViewData["ConfirmPassword"] ?? String.Empty)" />
+
+            @* server errors are passed via TempData as JSON and shown only in the modal; do not render inline *@
+            <div id="errorBox" data-server-errors='@(TempData["ServerErrors"] ?? "[]")' style="display:none"></div>
+
+            <div class="button-row">
+                <button type="button" id="toggleMode" class="button-confirm toggle-btn">Registrovat</button>
+                <button type="submit" class="button-confirm" id="submitButton">Přihlásit se →</button>
+            </div>
         </form>
     </div>
+
+    <script>
+        (function(){
+            var mode = '@initialMode'; // login nebo register
+            var form = document.getElementById('authForm');
+            var confirm = document.getElementById('ConfirmPassword');
+            var title = document.getElementById('formTitle');
+            var subtitle = document.getElementById('formSubtitle');
+            var submit = document.getElementById('submitButton');
+            var toggle = document.getElementById('toggleMode');
+
+            function setMode(m){
+                mode = m;
+                if(mode === 'login'){
+                    form.action = '@Url.Action("Login","Home")';
+                    confirm.style.visibility = 'hidden';
+                    submit.textContent = 'Přihlásit se →';
+                    subtitle.textContent = 'přihlašte se pro pokračování';
+                    toggle.textContent = 'Ještě nemáte účet?';
+                } else {
+                    form.action = '@Url.Action("Register","Home")';
+                    confirm.style.visibility = 'visible';
+                    submit.textContent = 'Registrovat →';
+                    subtitle.textContent = 'vytvořte si nový účet';
+                    toggle.textContent = 'Již máte účet?';
+                }
+            }
+
+            // ensure toggle never submits the form
+            toggle.setAttribute('type','button');
+            toggle.addEventListener('click', function(e){
+                e.preventDefault();
+                e.stopPropagation();
+                setMode(mode === 'login' ? 'register' : 'login');
+            });
+
+            // Intercept form submit and send via AJAX so server-side validation errors are shown inline
+            form.addEventListener('submit', async function(e){
+                e.preventDefault();
+                if (confirm) confirm.disabled = (mode === 'login');
+
+                var box = document.getElementById('errorBox');
+                box.innerHTML = '';
+
+                try {
+                    var fd = new FormData(form);
+                    var resp = await fetch(form.action, {
+                        method: 'POST',
+                        body: fd,
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+
+                    if (resp.ok) {
+                        var data = await resp.json().catch(function(){ return null; });
+                        if (data && data.success) {
+                            if (data.redirect) {
+                                window.location.href = data.redirect;
+                                return;
+                            }
+                            window.location.reload();
+                            return;
+                        }
+                        // fallback: reload
+                        window.location.reload();
+                        return;
+                    }
+
+                    // handle validation errors returned as JSON (400)
+                    var err = await resp.json().catch(function(){ return null; });
+                    if (err && err.errors) {
+                        // show modal with errors
+                        showModal(err.errors);
+                        if (err.email) document.getElementById('Email').value = err.email;
+                        return;
+                    }
+
+                    // generic error
+                    showModal(["Došlo k chybě, zkuste to prosím znovu."]);
+
+                } catch (ex) {
+                    showModal(["Chyba při odesílání požadavku."]);
+                } finally {
+                    if (confirm) confirm.disabled = false;
+                }
+            });
+
+            // initialize
+            setMode(mode);
+
+            // Collect any server-rendered inline errors inside the form (different helpers/classes)
+            function collectAndShowInlineErrors(){
+                var msgs = [];
+
+                // #errorBox specific
+                var serverBox = document.getElementById('errorBox');
+                if (serverBox) {
+                    Array.from(serverBox.querySelectorAll('.text-danger')).forEach(function(el){
+                        var t = el.textContent && el.textContent.trim();
+                        if (t) msgs.push(t);
+                    });
+                    serverBox.innerHTML = '';
+                }
+
+                // look for common validation classes inside the form
+                var selectors = ['.input-validation-error', '.field-validation-error', '.validation-summary-errors', '.validation-summary-valid', '.text-danger'];
+                selectors.forEach(function(sel){
+                    Array.from(form.querySelectorAll(sel)).forEach(function(el){
+                        var t = el.textContent && el.textContent.trim();
+                        if (t) msgs.push(t);
+                        // clear so it doesn't remain in form
+                        el.innerHTML = '';
+                    });
+                });
+
+                // dedupe and show
+                msgs = msgs.map(function(s){ return s; }).filter(function(v,i,a){ return v && a.indexOf(v) === i; });
+                if (msgs.length > 0) showModal(msgs);
+            }
+
+            // Note: do not automatically show server-rendered messages on page load.
+            // Modal is shown only for AJAX responses. Server-rendered messages remain inline
+            // for non-JS fallback so the user can see them without a modal.
+        })();
+        
+        function showModal(messages){
+            var existing = document.getElementById('validationModal');
+            if (!existing){
+                var overlay = document.createElement('div');
+                overlay.id = 'validationModal';
+                overlay.className = 'modal-overlay';
+                overlay.innerHTML = '<div class="modal-box"><div class="modal-title">Chyby</div><div class="modal-body" id="modalBody"></div><div><button class="modal-close" id="modalClose">Zavřít</button></div></div>';
+                document.body.appendChild(overlay);
+                document.getElementById('modalClose').addEventListener('click', function(){ overlay.style.display = 'none'; });
+            }
+            var overlayEl = document.getElementById('validationModal');
+            var body = overlayEl.querySelector('#modalBody');
+            body.innerHTML = messages.map(function(m){ return '<div class="text-danger" style="margin-bottom:6px">'+m+'</div>'; }).join('');
+            overlayEl.style.display = 'flex';
+        }
+    </script>
 
 </div>
 
