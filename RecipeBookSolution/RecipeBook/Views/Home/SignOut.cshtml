@@ -4,4 +4,21 @@
 @{
 }
 
-<strong>Test</strong>
+@{
+    ViewData["Title"] = "Odhlásit se";
+}
+
+<div style="margin: auto;">
+    <div class="loginFormWrapper">
+        <form method="post" action="@Url.Action("SignOutPost", "Home")" class="loginForm">
+            @Html.AntiForgeryToken()
+            <div class="title">Odhlásit se</div>
+            <div>Opravdu si přejete odhlásit svůj účet?</div>
+
+            <div style="margin-top:12px; display:flex; gap:10px; justify-content:space-between; width:100%;">
+                <a class="button-cancel" href="@Url.Action("Index","Home")">Zrušit</a>
+                <button type="submit" class="button-confirm">Odhlásit se</button>
+            </div>
+        </form>
+    </div>
+</div>

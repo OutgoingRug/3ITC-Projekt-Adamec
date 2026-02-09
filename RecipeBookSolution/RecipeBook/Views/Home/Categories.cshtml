@@ -1,22 +1,19 @@
-﻿@model List<RecipeBook.Models.DatabaseModels.Category>
+﻿@model dynamic
 @{
     ViewData["Title"] = "Categories";
 }
 
 <div>
-
-
-    <h3>Kategorie receptů</h3>
-
-
-    <div>
-        <ul>
-            @foreach (var item in Model)
-            {
-                <li>
-                    <a href="/home/recipelist/@item.Id">@item.Name</a>
-                </li>
-            }
-        </ul>
+    <div class="categoriesGrid">
+        @foreach (var item in Model)
+        {
+            <a class="category-link" href="@Url.Action("RecipeList", "Home", new { id = item.Id })" title="Zobrazit recepty v @item.Name">
+                <div class="categoryCard">
+                    <div class="categoryName">@item.Name</div>
+                    <div class="categoryMeta">@item.RecipeCount @(item.RecipeCount == 1 ? "recept" : item.RecipeCount >= 2 && item.RecipeCount <= 4 ? "recepty" : "receptů")</div>
+                </div>
+            </a>
+        }
     </div>
+
 </div>

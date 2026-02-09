@@ -40,18 +40,14 @@
                 </div>
 
                 <div class="recipeCardCreator">
-                    <h6>@item.CreatedAt</h6>
+                    <h6>@item.CreatedAt.Value.ToString("dd.MM.yyyy")</h6>
                 </div>
 
             </div>
 
         </div>
     }
-
 </div>
-
-
-
 
 @*  <ul>
     @foreach (var recipe in Model)

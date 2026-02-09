@@ -16,6 +16,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Net.Mail;
+using System.Net;
 
 namespace RecipeBook.Controllers
 {
@@ -42,6 +44,13 @@ namespace RecipeBook.Controllers
             var categories = _dbContext.Categories
                                     .Where(zaznam => zaznam.ParentCategoryId == null)
                                     .OrderBy(zaznam => zaznam.Name)
+                                    .ToList()
+                                    .Select(c => new 
+                                    {
+                                        Id = c.Id,
+                                        Name = c.Name,
+                                        RecipeCount = _dbContext.Recipes.Count(r => r.CategoryId == c.Id)
+                                    })
                                     .ToList();
 
             return View(categories);
@@ -261,6 +270,49 @@ namespace RecipeBook.Controllers
                 ViewData["Email"] = model.Email;
                 ViewData["ConfirmPassword"] = model.ConfirmPassword;
                 TempData["ShowServerErrors"] = "true";
+                return View("Account");
+            }
+
+            // validate email format and that the domain resolves (best-effort)
+            try
+            {
+                var addr = new MailAddress(model.Email);
+                var domain = addr.Host;
+                try
+                {
+                    var entry = Dns.GetHostEntry(domain);
+                    if (entry == null || entry.AddressList == null || entry.AddressList.Length == 0)
+                    {
+                        throw new Exception("Domain not resolvable");
+                    }
+                }
+                catch
+                {
+                    var msg = "Zadaná e-mailová doména neexistuje nebo nelze ověřit.";
+                    if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                    {
+                        return BadRequest(new { success = false, errors = new[] { msg }, email = model.Email });
+                    }
+
+                    ViewBag.RegisterError = msg;
+                    ViewData["Email"] = model.Email;
+                    TempData["ShowServerErrors"] = "true";
+                    TempData["ServerErrors"] = JsonSerializer.Serialize(new[] { msg });
+                    return View("Account");
+                }
+            }
+            catch
+            {
+                var msg = "Zadejte platný email.";
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return BadRequest(new { success = false, errors = new[] { msg }, email = model.Email });
+                }
+
+                ViewBag.RegisterError = msg;
+                ViewData["Email"] = model.Email;
+                TempData["ShowServerErrors"] = "true";
+                TempData["ServerErrors"] = JsonSerializer.Serialize(new[] { msg });
                 return View("Account");
             }
 

@@ -28,9 +28,31 @@
             </div>
 
             <div class="accountIcon">
-                <a href="/home/Account" data-bs-toggle="tooltip" title="Váš účet">
-                    <img src="~/img/Icon - Account.svg" alt="Icon">
-                </a>
+                @if (User?.Identity?.IsAuthenticated == true)
+                {
+                    var email = User.Identity.Name ?? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "";
+                    var initial = !string.IsNullOrEmpty(email) ? email.Trim()[0].ToString().ToUpper() : "U";
+                    // deterministic color from email hash
+                    var colors = new[] {
+                        "#ae74cc", "#56B385", "#2d8cf0", "#f39c12", "#e74c3c", "#9b59b6", "#1abc9c",
+                        "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2ecc71", "#e67e22",
+                        "#d35400", "#c0392b", "#7f8c8d", "#bdc3c7", "#e84393", "#00b894", "#6c5ce7",
+                        "#fd79a8", "#00cec9", "#0984e3", "#ffeaa7", "#fab1a0", "#f8c291", "#e056fd",
+                        "#74b9ff", "#55efc4", "#ff7675", "#fdcb6e"
+                    };
+                    var idx = Math.Abs((email ?? "").GetHashCode()) % colors.Length;
+                    var color = colors[idx];
+
+                    <a href="/home/Account" data-bs-toggle="tooltip" title="Přihlášen: @email">
+                        <div class="accountAvatar" style="background:@color">@initial</div>
+                    </a>
+                }
+                else
+                {
+                    <a href="/home/Account" data-bs-toggle="tooltip" title="Váš účet">
+                        <img src="~/img/Icon-AccountLightGrey.png" alt="Icon">
+                    </a>
+                }
             </div>
 
         </div>
