@@ -112,8 +112,8 @@ namespace RecipeBook.Controllers
 
             // duplikat?
             var duplicateExists = _dbContext.Recipes
-                                        .Where(r => r.CategoryId == recipe.CategoryId && r.Title == recipe.Title)
-                                        .Any();
+                                .Where(r => r.CategoryId == recipe.CategoryId && r.Title == recipe.Title)
+                                .Any();
 
             if (duplicateExists)
             {
@@ -123,6 +123,33 @@ namespace RecipeBook.Controllers
 
             //nastavime datum vytvoreni
             recipe.CreatedAt = DateTime.Now;
+
+            // Set UserId: use logged-in user or default "noname" user
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                if (int.TryParse(userIdClaim, out int userId))
+                {
+                    recipe.UserId = userId;
+                }
+            }
+            else
+            {
+                // Get or create "noname" anonymous user
+                var anonymousUser = _dbContext.Users.FirstOrDefault(u => u.Email == "noname");
+                if (anonymousUser == null)
+                {
+                    anonymousUser = new User
+                    {
+                        Email = "noname",
+                        PasswordHash = "", // Empty since this is not a real login account
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    _dbContext.Users.Add(anonymousUser);
+                    _dbContext.SaveChanges();
+                }
+                recipe.UserId = anonymousUser.Id;
+            }
 
             // pridat a ulozit
             _dbContext.Recipes.Add(recipe);
@@ -373,7 +400,11 @@ namespace RecipeBook.Controllers
 
         public IActionResult RecipeDetail(int id)
         {
-            var recipe = _dbContext.Recipes.Where(r => r.Id == id).FirstOrDefault();
+            var recipe = _dbContext.Recipes
+                .Include(r => r.User)
+                .Include(r => r.Category)
+                .Where(r => r.Id == id)
+                .FirstOrDefault();
 
             return View(recipe);
         }

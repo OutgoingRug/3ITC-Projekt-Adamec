@@ -29,6 +29,26 @@
     </div>
 
     <div class="recipeDetailInfo2">
+        @{
+            var authorName = "Anonymous";
+            if (Model.User != null && !string.IsNullOrEmpty(Model.User.Email))
+            {
+                if (!string.Equals(Model.User.Email, "noname", StringComparison.OrdinalIgnoreCase))
+                {
+                    authorName = Model.User.Email;
+                }
+            }
+        }
+        <p><strong>Autor:</strong> @authorName</p>
+        
+        @if (Model.CreatedAt.HasValue)
+        {
+            <p><strong>Vytvořeno:</strong> @Model.CreatedAt.Value.ToString("dd.MM.yyyy HH:mm")</p>
+        }
+        @if (Model.Category != null)
+        {
+            <p><strong>Kategorie:</strong> @Model.Category.Name</p>
+        }
     </div>
 
 
