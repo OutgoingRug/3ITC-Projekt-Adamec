@@ -1,0 +1,57 @@
+@using Microsoft.AspNetCore.Hosting
+@inject IWebHostEnvironment env
+@model List<RecipeBook.Models.DatabaseModels.Recipe>
+@{
+    ViewData["Title"] = "Search Results";
+    var searchQuery = ViewData["SearchQuery"]?.ToString() ?? "";
+}
+
+@if (Model.Count > 0)
+{
+    <div class="recipeGrid">
+        @foreach (var item in Model)
+        {
+            <div class="recipeCard" onclick="javascript:document.location='/home/recipedetail/'+@item.Id">
+
+                <div class="recipeCardImage">
+                    @{
+                        var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", item.Id.ToString() + ".jpg");
+                        var imgExists = System.IO.File.Exists(imgPhysicalPath);
+                    }
+                    @if (imgExists)
+                    {
+                        <img src="@Url.Content($"~/images/recipes/{item.Id}.jpg")" alt="Recipe image" />
+                    }
+                    else
+                    {
+                        <img src="~/img/food-wide.png" />
+                    }
+                </div>
+
+                <div class="recipeCardContent">
+
+                    <div class="recipeCardCategory">
+                        <h6>@item.Category.Name</h6>
+                    </div>
+
+                    <div class="recipeCardName">
+                        <h5>@item.Title</h5>
+                    </div>
+
+                    <div class="recipeCardCreator">
+                        <h6>@item.CreatedAt.Value.ToString("dd.MM.yyyy")</h6>
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="noResults">
+        <p>Žádné recepty nenalezeny pro "<strong>@searchQuery</strong>"</p>
+        <a href="/home" class="btn btn-primary">Zpět na domů</a>
+    </div>
+}

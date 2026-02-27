@@ -18,6 +18,8 @@ using System.Linq;
 using System.Text.Json;
 using System.Net.Mail;
 using System.Net;
+using System.Text;
+using System.Globalization;
 
 namespace RecipeBook.Controllers
 {
@@ -407,6 +409,96 @@ namespace RecipeBook.Controllers
                 .FirstOrDefault();
 
             return View(recipe);
+        }
+
+        public IActionResult Search(string query, string type = "recipes")
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return View(new List<Recipe>());
+            }
+
+            var searchTerm = RemoveDiacritics(query).ToLower();
+            List<Recipe> recipes = new List<Recipe>();
+
+            if (type == "recipes")
+            {
+                recipes = _dbContext.Recipes
+                    .Include(x => x.Category)
+                    .ToList()
+                    .Where(r => RemoveDiacritics(r.Title).ToLower().Contains(searchTerm) || 
+                                RemoveDiacritics(r.Category.Name).ToLower().Contains(searchTerm))
+                    .OrderBy(r => r.Title)
+                    .ToList();
+            }
+            else if (type == "ingredients")
+            {
+                recipes = _dbContext.Recipes
+                    .Include(x => x.Category)
+                    .ToList()
+                    .Where(r => RemoveDiacritics(r.Ingredients ?? "").ToLower().Contains(searchTerm))
+                    .OrderBy(r => r.Title)
+                    .ToList();
+            }
+
+            ViewData["SearchQuery"] = query;
+            ViewData["SearchType"] = type;
+            return View(recipes);
+        }
+
+        private string RemoveDiacritics(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return text;
+
+            var normalizedString = text.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder();
+
+            foreach (var c in normalizedString)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+        }
+
+        [HttpGet]
+        public IActionResult SearchSuggestions(string query, string type = "recipes")
+        {
+            if (string.IsNullOrWhiteSpace(query) || query.Length < 2)
+            {
+                return Json(new List<object>());
+            }
+
+            var searchTerm = RemoveDiacritics(query).ToLower();
+            List<dynamic> results = new List<dynamic>();
+
+            if (type == "recipes")
+            {
+                var recipes = _dbContext.Recipes
+                    .Include(x => x.Category)
+                    .ToList()
+                    .Where(r => RemoveDiacritics(r.Title).ToLower().Contains(searchTerm) || 
+                                RemoveDiacritics(r.Category.Name).ToLower().Contains(searchTerm))
+                    .Take(6)
+                    .Select(r => new { id = r.Id, title = r.Title, type = "recipe", icon = "📖" });
+                results.AddRange(recipes);
+            }
+            else if (type == "ingredients")
+            {
+                var recipes = _dbContext.Recipes
+                    .ToList()
+                    .Where(r => RemoveDiacritics(r.Ingredients ?? "").ToLower().Contains(searchTerm))
+                    .Take(6)
+                    .Select(r => new { id = r.Id, title = r.Title, type = "ingredient", icon = "🛒" });
+                results.AddRange(recipes);
+            }
+
+            return Json(results);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

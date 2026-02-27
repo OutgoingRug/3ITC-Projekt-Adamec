@@ -14,17 +14,32 @@
     <header class="header">
         <div class="headerDiv">
 
-            <div class="vyhledavaniParent">
+            <div class="searchContainer">
+                <div class="searchTypeContainer">
+                    <select id="searchType" class="searchTypeSelect" style="display: none;">
+                        <option value="recipes">📖 Recepty</option>
+                        <option value="ingredients">🛒 Ingredience</option>
+                    </select>
+                    <div class="customDropdown">
+                        <div class="dropdownButton">📖 Recepty</div>
+                        <div class="dropdownMenu" id="dropdownMenu">
+                            <div class="dropdownOption" data-value="recipes">📖 Recepty</div>
+                            <div class="dropdownOption" data-value="ingredients">🛒 Ingredience</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="input-container">
                     <input class="vyhledavaniReceptu"
+                           id="searchInput"
                            name="text"
                            type="text"
-                           placeholder="Hledat..." />
+                           placeholder="Hledat..."
+                           spellcheck="false" />
+                    <div class="suggestionsContainer" id="suggestionsContainer"></div>
+                    <div class="vyhledavaniLupa">
+                        <img class="iconSearch" src="~/img/Icon - Magnifying glass.svg" alt="">
+                    </div>
                 </div>
-                <div class="vyhledavaniLupa">
-                    <img class="iconSearch" src="./img/Icon - Magnifying glass.svg" alt="">
-                </div>
-
             </div>
 
             <div class="accountIcon">
