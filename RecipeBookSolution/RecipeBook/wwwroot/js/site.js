@@ -3,6 +3,34 @@
 
 // Write your JavaScript code.
 
+function addToBookmarks(recipeId) {
+    console.info('Přidávám recept s ID ' + recipeId + ' do oblíbených.');
+    fetch('/Home/AddToBookmarks', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(recipeId)
+    })
+    .then(response => {
+        if (response.status === 401) {
+            alert('Musíte být přihlášeni, aby jste mohli přidávat recepty do oblíbených.');
+            return;
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data && data.success) {
+            alert(data.message);
+        } else if (data && data.message) {
+            alert('Chyba: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Chyba:', error);
+        alert('Došlo k chybě při přidání receptu do oblíbených.');
+    });
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));

@@ -62,6 +62,7 @@ namespace RecipeBook.Controllers
         {
             var recipes = _dbContext.Recipes.Include(x => x.Category)
                                     .Where(zaznam => zaznam.CategoryId == id)
+                                    .AsNoTracking()
                                     .OrderBy(zaznam => zaznam.Title)
                                     .ToList();
 
@@ -177,6 +178,53 @@ namespace RecipeBook.Controllers
             }
 
             return RedirectToAction(nameof(RecipeDetail), new { id = recipe.Id });
+        }
+
+        [HttpPost]
+        public IActionResult AddToBookmarks([FromBody] int recipeId)
+        {
+            try
+            {
+                var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                
+                if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out var parsedUserId))
+                {
+                    return Unauthorized(new { success = false, message = "Musíte být přihlášeni." });
+                }
+
+                var recipe = _dbContext.Recipes.FirstOrDefault(r => r.Id == recipeId);
+                
+                if (recipe == null)
+                {
+                    return Ok(new { success = false, message = $"Recept s ID {recipeId} neexistuje." });
+                }
+
+                var existingFavorite = _dbContext.Favorites
+                    .FirstOrDefault(f => f.UserId == parsedUserId && f.RecipeId == recipeId);
+
+                if (existingFavorite != null)
+                {
+                    _dbContext.Favorites.Remove(existingFavorite);
+                    _dbContext.SaveChanges();
+                    return Ok(new { success = true, message = "Recept byl odstraněn z oblíbených.", isBookmarked = false });
+                }
+
+                var favorite = new Favorite
+                {
+                    UserId = parsedUserId,
+                    RecipeId = recipeId,
+                    CreatedAt = DateTime.Now
+                };
+
+                _dbContext.Favorites.Add(favorite);
+                _dbContext.SaveChanges();
+
+                return Ok(new { success = true, message = "Recept byl přidán do oblíbených.", isBookmarked = true });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new { success = false, message = "Chyba: " + ex.Message });
+            }
         }
 
         public IActionResult Privacy()
@@ -482,6 +530,7 @@ namespace RecipeBook.Controllers
                 var recipes = _dbContext.Recipes
                     .Include(x => x.Category)
                     .ToList()
+
                     .Where(r => RemoveDiacritics(r.Title).ToLower().Contains(searchTerm) || 
                                 RemoveDiacritics(r.Category.Name).ToLower().Contains(searchTerm))
                     .Take(6)

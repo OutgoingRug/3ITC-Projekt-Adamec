@@ -25,6 +25,7 @@
                 {
                     entity.ToTable("User");
                     entity.HasKey(u => u.Id);
+                    
                 });
 
                 modelBuilder.Entity<Recipe>(entity =>

@@ -27,6 +27,9 @@
                 {
                     <img src="~/img/food-wide.png" />
                 }
+                <div class="recipeCardFavoriteIcon" onclick="event.stopPropagation(); addToBookmarks(@item.Id);">
+                    <img src="~/img/Icon - Favorites.svg" alt="Add to favorites" />
+                </div>
             </div>
 
             <div class="recipeCardContent">
