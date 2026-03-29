@@ -66,6 +66,11 @@ namespace RecipeBook.Controllers
                                     .OrderBy(zaznam => zaznam.Title)
                                     .ToList();
 
+            var recipeIds = recipes.Select(r => r.Id).ToList();
+            var (ratingAverages, ratingCounts) = GetRecipeRatingStats(recipeIds);
+            ViewBag.RecipeRatingAverages = ratingAverages;
+            ViewBag.RecipeRatingCounts = ratingCounts;
+
             return View(recipes);
         }
 
@@ -234,7 +239,28 @@ namespace RecipeBook.Controllers
 
         public IActionResult Bookmarks()
         {
-            return View();
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            
+            if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out var parsedUserId))
+            {
+                return View(new List<Recipe>());
+            }
+
+            var bookmarkedRecipes = _dbContext.Favorites
+                .Where(f => f.UserId == parsedUserId)
+                .Join(_dbContext.Recipes.Include(r => r.Category),
+                    favorite => favorite.RecipeId,
+                    recipe => recipe.Id,
+                    (favorite, recipe) => recipe)
+                .OrderBy(r => r.Title)
+                .ToList();
+
+            var recipeIds = bookmarkedRecipes.Select(r => r.Id).ToList();
+            var (ratingAverages, ratingCounts) = GetRecipeRatingStats(recipeIds);
+            ViewBag.RecipeRatingAverages = ratingAverages;
+            ViewBag.RecipeRatingCounts = ratingCounts;
+
+            return View(bookmarkedRecipes);
         }
         public IActionResult Account()
         {
@@ -456,7 +482,104 @@ namespace RecipeBook.Controllers
                 .Where(r => r.Id == id)
                 .FirstOrDefault();
 
+            if (recipe == null)
+            {
+                return NotFound();
+            }
+
+            var recipeRatings = _dbContext.Ratings.Where(r => r.RecipeId == id);
+            var ratingCount = recipeRatings.Count();
+            var ratingAverage = ratingCount > 0 ? Math.Round(recipeRatings.Average(r => r.Stars), 1) : 0;
+
+            int? userRating = null;
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (int.TryParse(userIdClaim, out var parsedUserId))
+            {
+                userRating = _dbContext.Ratings
+                    .Where(r => r.RecipeId == id && r.UserId == parsedUserId)
+                    .Select(r => (int?)r.Stars)
+                    .FirstOrDefault();
+            }
+
+            ViewBag.RatingCount = ratingCount;
+            ViewBag.RatingAverage = ratingAverage;
+            ViewBag.UserRating = userRating;
+
             return View(recipe);
+        }
+
+        [HttpPost]
+        public IActionResult RateRecipe([FromBody] RateRecipeRequest request)
+        {
+            if (request == null || request.RecipeId <= 0 || request.Stars < 0 || request.Stars > 5)
+            {
+                return BadRequest(new { success = false, message = "Neplatná data hodnocení." });
+            }
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out var parsedUserId))
+            {
+                return Unauthorized(new { success = false, message = "Pro hodnocení se přihlaste." });
+            }
+
+            var recipeExists = _dbContext.Recipes.Any(r => r.Id == request.RecipeId);
+            if (!recipeExists)
+            {
+                return NotFound(new { success = false, message = "Recept neexistuje." });
+            }
+
+            var existingRating = _dbContext.Ratings
+                .FirstOrDefault(r => r.RecipeId == request.RecipeId && r.UserId == parsedUserId);
+
+            if (request.Stars == 0)
+            {
+                if (existingRating != null)
+                {
+                    _dbContext.Ratings.Remove(existingRating);
+                }
+            }
+            else if (existingRating == null)
+            {
+                _dbContext.Ratings.Add(new Rating
+                {
+                    RecipeId = request.RecipeId,
+                    UserId = parsedUserId,
+                    Stars = request.Stars,
+                    Comment = string.Empty,
+                    CreatedAt = DateTime.Now
+                });
+            }
+            else
+            {
+                existingRating.Stars = request.Stars;
+            }
+
+            _dbContext.SaveChanges();
+
+            var recipeRatings = _dbContext.Ratings.Where(r => r.RecipeId == request.RecipeId);
+            var ratingCount = recipeRatings.Count();
+            var ratingAverage = ratingCount > 0 ? Math.Round(recipeRatings.Average(r => r.Stars), 1) : 0;
+
+            return Ok(new
+            {
+                success = true,
+                message = request.Stars == 0 ? "Hodnocení bylo odebráno." : "Hodnocení bylo uloženo.",
+                average = ratingAverage,
+                count = ratingCount,
+                userRating = request.Stars
+            });
+        }
+
+        public class RateRecipeRequest
+        {
+            public int RecipeId { get; set; }
+            public int Stars { get; set; }
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
         public IActionResult Search(string query, string type = "recipes")
@@ -488,6 +611,11 @@ namespace RecipeBook.Controllers
                     .OrderBy(r => r.Title)
                     .ToList();
             }
+
+            var recipeIds = recipes.Select(r => r.Id).ToList();
+            var (ratingAverages, ratingCounts) = GetRecipeRatingStats(recipeIds);
+            ViewBag.RecipeRatingAverages = ratingAverages;
+            ViewBag.RecipeRatingCounts = ratingCounts;
 
             ViewData["SearchQuery"] = query;
             ViewData["SearchType"] = type;
@@ -531,7 +659,7 @@ namespace RecipeBook.Controllers
                     .Include(x => x.Category)
                     .ToList()
 
-                    .Where(r => RemoveDiacritics(r.Title).ToLower().Contains(searchTerm) || 
+                    .Where(r => RemoveDiacritics(r.Title).ToLower().Contains(searchTerm) ||
                                 RemoveDiacritics(r.Category.Name).ToLower().Contains(searchTerm))
                     .Take(6)
                     .Select(r => new { id = r.Id, title = r.Title, type = "recipe", icon = "📖" });
@@ -550,10 +678,28 @@ namespace RecipeBook.Controllers
             return Json(results);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        private (Dictionary<int, double> averages, Dictionary<int, int> counts) GetRecipeRatingStats(List<int> recipeIds)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (recipeIds == null || recipeIds.Count == 0)
+            {
+                return (new Dictionary<int, double>(), new Dictionary<int, int>());
+            }
+
+            var stats = _dbContext.Ratings
+                .Where(r => recipeIds.Contains(r.RecipeId))
+                .GroupBy(r => r.RecipeId)
+                .Select(g => new
+                {
+                    RecipeId = g.Key,
+                    Average = Math.Round(g.Average(x => x.Stars), 1),
+                    Count = g.Count()
+                })
+                .ToList();
+
+            var averages = stats.ToDictionary(x => x.RecipeId, x => x.Average);
+            var counts = stats.ToDictionary(x => x.RecipeId, x => x.Count);
+
+            return (averages, counts);
         }
     }
 }

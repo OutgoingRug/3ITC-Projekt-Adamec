@@ -4,6 +4,8 @@
 @{
     ViewData["Title"] = "Search Results";
     var searchQuery = ViewData["SearchQuery"]?.ToString() ?? "";
+    var recipeRatingAverages = ViewBag.RecipeRatingAverages as Dictionary<int, double> ?? new Dictionary<int, double>();
+    var recipeRatingCounts = ViewBag.RecipeRatingCounts as Dictionary<int, int> ?? new Dictionary<int, int>();
 }
 
 @if (Model.Count > 0)
@@ -17,6 +19,8 @@
                     @{
                         var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", item.Id.ToString() + ".jpg");
                         var imgExists = System.IO.File.Exists(imgPhysicalPath);
+                        var hasRating = recipeRatingCounts.TryGetValue(item.Id, out var recipeRatingCount) && recipeRatingCount > 0;
+                        var averageRating = recipeRatingAverages.TryGetValue(item.Id, out var recipeAverage) ? recipeAverage : 0;
                     }
                     @if (imgExists)
                     {
@@ -26,6 +30,7 @@
                     {
                         <img src="~/img/food-wide.png" />
                     }
+                    <div class="recipeCardRatingBadge">★ @(hasRating ? averageRating.ToString("0.0") : "-")</div>
                 </div>
 
                 <div class="recipeCardContent">

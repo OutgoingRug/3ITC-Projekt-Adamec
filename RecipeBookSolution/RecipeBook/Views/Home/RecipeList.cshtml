@@ -3,6 +3,8 @@
 @model List<RecipeBook.Models.DatabaseModels.Recipe>
 @{
     ViewData["Title"] = "RecipeList";
+    var recipeRatingAverages = ViewBag.RecipeRatingAverages as Dictionary<int, double> ?? new Dictionary<int, double>();
+    var recipeRatingCounts = ViewBag.RecipeRatingCounts as Dictionary<int, int> ?? new Dictionary<int, int>();
 }
 
 
@@ -18,6 +20,8 @@
 
                     var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", item.Id.ToString() + ".jpg");
                     var imgExists = System.IO.File.Exists(imgPhysicalPath);
+                    var hasRating = recipeRatingCounts.TryGetValue(item.Id, out var recipeRatingCount) && recipeRatingCount > 0;
+                    var averageRating = recipeRatingAverages.TryGetValue(item.Id, out var recipeAverage) ? recipeAverage : 0;
                 }
                 @if (imgExists)
                 {
@@ -27,7 +31,8 @@
                 {
                     <img src="~/img/food-wide.png" />
                 }
-                <div class="recipeCardFavoriteIcon" onclick="event.stopPropagation(); addToBookmarks(@item.Id);">
+                <div class="recipeCardRatingBadge">★ @(hasRating ? averageRating.ToString("0.0") : "-")</div>
+                <div class="recipeCardFavoriteIcon" onclick="event.stopPropagation(); addToBookmarks(@item.Id, this);">
                     <img src="~/img/Icon - Favorites.svg" alt="Add to favorites" />
                 </div>
             </div>

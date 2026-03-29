@@ -1,35 +1,61 @@
-﻿@model List<RecipeBook.Models.DatabaseModels.Favorite>
+﻿@using Microsoft.AspNetCore.Hosting
+@inject IWebHostEnvironment env
+@model List<RecipeBook.Models.DatabaseModels.Recipe>
 @{
     ViewData["Title"] = "Bookmarks";
+    var recipeRatingAverages = ViewBag.RecipeRatingAverages as Dictionary<int, double> ?? new Dictionary<int, double>();
+    var recipeRatingCounts = ViewBag.RecipeRatingCounts as Dictionary<int, int> ?? new Dictionary<int, int>();
 }
 
 <div class="recipeGrid">
-
-
-    @for (int i = 0; i < 17; i++)
+    @if (Model == null || Model.Count == 0)
     {
-        <div class="recipeCard">
-
-            <div class="recipeCardImage">
-            </div>
-
-            <div class="recipeCardContent">
-
-                <div class="recipeCardCategory">
-                    <h6>Kategorie</h6>
-                </div>
-
-                <div class="recipeCardName">
-                    <h5>Nazev</h5>
-                </div>
-
-                <div class="recipeCardCreator">
-                    <h6>Autor</h6>
-                </div>
-
-            </div>
-
-        </div>
+        <p style="grid-column: 1 / -1; text-align: center; padding: 40px;">Zatím nemáš žádné oblíbené recepty.</p>
     }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            <div class="recipeCard" onclick="javascript:document.location='/home/recipedetail/'+@item.Id">
 
+                <div class="recipeCardImage">
+                    @{
+                        var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", item.Id.ToString() + ".jpg");
+                        var imgExists = System.IO.File.Exists(imgPhysicalPath);
+                        var hasRating = recipeRatingCounts.TryGetValue(item.Id, out var recipeRatingCount) && recipeRatingCount > 0;
+                        var averageRating = recipeRatingAverages.TryGetValue(item.Id, out var recipeAverage) ? recipeAverage : 0;
+                    }
+                    @if (imgExists)
+                    {
+                        <img src="@Url.Content($"~/images/recipes/{item.Id}.jpg")" alt="Recipe image" />
+                    }
+                    else
+                    {
+                        <img src="~/img/food-wide.png" />
+                    }
+                    <div class="recipeCardRatingBadge">★ @(hasRating ? averageRating.ToString("0.0") : "-")</div>
+                    <div class="recipeCardFavoriteIcon" onclick="event.stopPropagation(); addToBookmarks(@item.Id, this);">
+                        <img src="~/img/Icon - Favorites.svg" alt="Remove from favorites" />
+                    </div>
+                </div>
+
+                <div class="recipeCardContent">
+
+                    <div class="recipeCardCategory">
+                        <h6>@item.Category.Name</h6>
+                    </div>
+
+                    <div class="recipeCardName">
+                        <h5>@item.Title</h5>
+                    </div>
+
+                    <div class="recipeCardCreator">
+                        <h6>@item.CreatedAt.Value.ToString("dd.MM.yyyy")</h6>
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    }
 </div>

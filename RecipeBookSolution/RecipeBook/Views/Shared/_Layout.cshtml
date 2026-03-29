@@ -17,14 +17,14 @@
             <div class="searchContainer">
                 <div class="searchTypeContainer">
                     <select id="searchType" class="searchTypeSelect" style="display: none;">
-                        <option value="recipes">📖 Recepty</option>
-                        <option value="ingredients">🛒 Ingredience</option>
+                        <option value="recipes">Recepty</option>
+                        <option value="ingredients">Ingredience</option>
                     </select>
                     <div class="customDropdown">
-                        <div class="dropdownButton">📖 Recepty</div>
+                        <div class="dropdownButton">Recepty</div>
                         <div class="dropdownMenu" id="dropdownMenu">
-                            <div class="dropdownOption" data-value="recipes">📖 Recepty</div>
-                            <div class="dropdownOption" data-value="ingredients">🛒 Ingredience</div>
+                            <div class="dropdownOption" data-value="recipes">Recepty</div>
+                            <div class="dropdownOption" data-value="ingredients">Ingredience</div>
                         </div>
                     </div>
                 </div>
@@ -47,7 +47,7 @@
                 {
                     var email = User.Identity.Name ?? User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "";
                     var initial = !string.IsNullOrEmpty(email) ? email.Trim()[0].ToString().ToUpper() : "U";
-                    // deterministic color from email hash
+
                     var colors = new[] {
                         "#ae74cc", "#56B385", "#2d8cf0", "#f39c12", "#e74c3c", "#9b59b6", "#1abc9c",
                         "#34495e", "#16a085", "#27ae60", "#2980b9", "#8e44ad", "#2ecc71", "#e67e22",

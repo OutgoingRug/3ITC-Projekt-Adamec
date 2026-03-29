@@ -3,7 +3,7 @@
 
 // Write your JavaScript code.
 
-function addToBookmarks(recipeId) {
+function addToBookmarks(recipeId, iconElement) {
     console.info('Přidávám recept s ID ' + recipeId + ' do oblíbených.');
     fetch('/Home/AddToBookmarks', {
         method: 'POST',
@@ -18,9 +18,21 @@ function addToBookmarks(recipeId) {
             return;
         }
         return response.json();
-    })
+    })  
     .then(data => {
         if (data && data.success) {
+            if (iconElement) {
+                iconElement.classList.remove('bookmarked');
+                void iconElement.offsetWidth;
+                iconElement.classList.add('bookmarked');
+                
+                if (!data.isBookmarked) {
+                    setTimeout(() => {
+                        iconElement.classList.remove('bookmarked');
+                    }, 600);
+                }
+            }
+            
             alert(data.message);
         } else if (data && data.message) {
             alert('Chyba: ' + data.message);
