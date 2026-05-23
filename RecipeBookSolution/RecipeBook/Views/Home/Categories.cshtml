@@ -1,19 +1,29 @@
 ﻿@model dynamic
 @{
     ViewData["Title"] = "Categories";
+    var groups = ((IEnumerable<dynamic>)Model)
+        .GroupBy(c => (string)(c.Description ?? string.Empty))
+        .OrderBy(g => g.Key);
 }
 
 <div>
-    <div class="categoriesGrid">
-        @foreach (var item in Model)
+    <div class="categoriesColumns">
+        @foreach (var group in groups)
         {
-            <a class="category-link" href="@Url.Action("RecipeList", "Home", new { id = item.Id })" title="Zobrazit recepty v @item.Name">
-                <div class="categoryCard">
-                    <div class="categoryName">@item.Description: @item.Name</div>
-                    <div class="categoryMeta">@item.RecipeCount @(item.RecipeCount == 1 ? "recept" : item.RecipeCount >= 2 && item.RecipeCount <= 4 ? "recepty" : "receptů")</div>
+            <div class="categoryColumn">
+                <h3 class="categoryColumnTitle">@group.Key</h3>
+                <div class="categoriesGrid">
+                    @foreach (var item in group)
+                    {
+                        <a class="category-link" href="@Url.Action("RecipeList", "Home", new { id = item.Id })" title="Zobrazit recepty v @item.Name">
+                            <div class="categoryCard">
+                                <div class="categoryName">@item.Name</div>
+                                <div class="categoryMeta">@item.RecipeCount @(item.RecipeCount == 1 ? "recept" : item.RecipeCount >= 2 && item.RecipeCount <= 4 ? "recepty" : "receptů")</div>
+                            </div>
+                        </a>
+                    }
                 </div>
-            </a>
+            </div>
         }
     </div>
-
 </div>

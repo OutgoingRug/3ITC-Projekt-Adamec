@@ -627,6 +627,38 @@ header {
 /* Konec formy pro prihlaseni */
 
 
+.categoriesColumns {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+    padding: 12px 0;
+    align-items: flex-start;
+}
+
+.categoryColumn {
+    flex: 0 1 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.categoryColumnTitle {
+    font-family: "JetBrainsMonoNL NF", monospace;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+    padding-bottom: 6px;
+    border-bottom: 2px solid black;
+    text-align: center;
+}
+
+.categoryColumn .categoriesGrid {
+    grid-template-columns: 1fr;
+    padding: 0;
+    gap: 12px;
+}
+
 .categoriesGrid {
     width: 100%;
     display: grid;
