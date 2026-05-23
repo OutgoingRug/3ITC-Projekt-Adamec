@@ -629,19 +629,18 @@ header {
 
 .categoriesColumns {
     width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 16px;
     padding: 12px 0;
-    align-items: flex-start;
+    align-items: start;
 }
 
 .categoryColumn {
-    flex: 0 1 260px;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    min-width: 0;
 }
 
 .categoryColumnTitle {
