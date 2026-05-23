@@ -354,7 +354,9 @@ function initCustomDropdown() {
         borderTop: 'none',
         display: 'none',
         zIndex: '1000',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        maxHeight: '240px',
+        overflowY: 'auto'
     });
     
     // Add options
