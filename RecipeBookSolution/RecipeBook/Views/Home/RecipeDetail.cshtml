@@ -19,12 +19,12 @@
         <div class="recipeDetailImageInner">
             @{
 
-                var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", Model.Id.ToString() + ".jpg");
+                var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", "recept_" + Model.Id.ToString() + ".jpg");
                 var imgExists = System.IO.File.Exists(imgPhysicalPath);
             }
             @if (imgExists)
             {
-                <img src="@Url.Content($"~/images/recipes/{Model.Id}.jpg")" alt="Recipe image" />
+                <img src="@Url.Content($"~/images/recipes/recept_{Model.Id}.jpg")" alt="Recipe image" />
             }
             else
             {
@@ -203,7 +203,7 @@
                 label.addEventListener('click', async (e) => {
                     const targetInput = starsContainer.querySelector(`#${label.htmlFor}`);
                     if (!targetInput) {
-                        return;
+                        return; 
                     }
 
                     const selectedStars = Number(targetInput.value);

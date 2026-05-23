@@ -713,7 +713,9 @@ header {
     border: 2px solid black;
     width: 300px;
     height: 250px;
+    background-color: #F2EEE9;
     box-shadow: 4px 4px 0 #000;
+    cursor: pointer;
     transition: box-shadow 0.2s ease;
 }
 
@@ -776,20 +778,35 @@ header {
 .recipeCardName {
     position: absolute;
     top: 0;
+    left: 0;
     padding: 2px 0 0 5px;
     font-family: "JetBrainsMonoNL NF", monospace;
+    grid-column: auto;
+}
+
+.recipeCardName h5 {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .recipeCardCreator {
     position: absolute;
     bottom: 0;
+    left: 0;
     padding-left: 5px;
     font-family: "JetBrainsMonoNL NF", monospace;
     font-size: 10px;
+    grid-column: auto;
 }
 
 .recipeCardCreator h6 {
-    font-size: 13px;
+    font-size: 12px;
     margin: 0;
 }
 
@@ -800,58 +817,136 @@ header {
     padding-right: 10px;
     font-family: "JetBrainsMonoNL NF", monospace;
     font-size: 10px;
+    grid-column: auto;
+    justify-self: auto;
 }
 
 .recipeCardCategory h6 {
-    font-size: 13px;
+    font-size: 12px;
     margin: 0;
-}
-
-.no-layout-form {
-    display: contents;
-}
-
-@supports not (display: contents) {
-    .no-layout-form {
-        display: block;
-        margin: 0;
-        padding: 0;
-    }
 }
 
 .recipeCardContent { /* Spodni cast karticky */
     height: 30%;
     display: flex;
     position: relative;
+    padding: 0;
     background-color: #ebe5df;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.recipeCardRatingBadge {
-    position: absolute;
-    left: 8px;
-    bottom: 8px;
-    padding: 2px 6px;
-    font-family: "JetBrainsMonoNL NF", monospace;
-    font-size: 12px;
-    font-weight: 700;
-    background: rgba(242, 238, 233, 0.92);
-    border: 2px solid #000;
-    box-shadow: 2px 2px 0 #000;
-    color: #000;
-    z-index: 9;
-}
-
-
 .recipeGrid { /* Grid karticek */
     width: 100%;
     display: grid;
-    gap: 35px;
+    gap: 24px;
     grid-template-columns: repeat(auto-fill, 300px);
     justify-content: center;
 }
 /* Konec karticek pro recepty */
 
+
+.homeRecipeStack {
+    display: grid;
+    gap: 10px;
+}
+
+.homeRecipeMiniCard {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 10px;
+    align-items: stretch;
+    border: 2px solid black;
+    background-color: #ebe5df;
+    box-shadow: 4px 4px 0 #000;
+    text-decoration: none;
+    color: #000;
+    min-height: 108px;
+    overflow: hidden;
+    transition: box-shadow 0.18s ease, transform 0.12s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.homeRecipeMiniCard:hover {
+    box-shadow: 6px 6px 0 #000;
+    background-color: #ae74cc;
+    color: white;
+}
+
+.homeRecipeMiniCard:hover .homeRecipeMiniTitle,
+.homeRecipeMiniCard:hover .homeRecipeMiniMeta {
+    color: white;
+}
+
+.homeRecipeMiniImage {
+    border-right: 2px solid black;
+    min-height: 108px;
+    max-height: 108px;
+}
+
+.homeRecipeMiniImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.homeRecipeMiniBody {
+    padding: 10px 10px 10px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+}
+
+.homeRecipeMiniTitle {
+    font-family: "JetBrainsMonoNL NF", monospace;
+    font-weight: 800;
+    font-size: 14px;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.homeRecipeMiniMeta {
+    font-family: "JetBrainsMonoNL NF", monospace;
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.9;
+}
+
+.homeColumnCard {
+    border: 2px solid black;
+    background-color: #ebe5df;
+    box-shadow: 4px 4px 0 #000;
+    padding: 14px;
+    min-height: 260px;
+}
+
+.homeColumnCard h4 {
+    margin-bottom: 12px;
+    font-size: 18px;
+}
+
+.homeRecipeList {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.homeRecipeList li {
+    margin-bottom: 8px;
+}
+
+.homeRecipeList a {
+    color: #000;
+    text-decoration: none;
+}
+
+.homeRecipeList a:hover {
+    color: #ae74cc;
+    text-decoration: underline;
+}
 
 .pouzitelnyView {
     margin-top: 8.8vh;
@@ -953,8 +1048,6 @@ header {
     margin-top: 40px;
     padding: 5px;
     font-family: "JetBrainsMonoNL", monospace;
-}
-
 }
 
 .recipeDetailDescriptionCreateRecipe {
@@ -1064,44 +1157,59 @@ header {
         width: calc(100vw - 65px);
     }
 
+    .homeColumns {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .recipeDetailLeft,
     .recipeDetailPart {
         width: 100%;
         max-width: 100%;
-        margin: 0 0 30px 0;
-    }
-
-    .recipeDetailPart {
-        overflow-y: visible;
+        margin: 0 0 20px 0;
     }
 
     .recipeDetailLeft {
-        display: contents;
+        display: flex;
+        flex-direction: column;
     }
 
     .recipeDetailInfo {
-        order: 1;
         width: 100%;
-        margin-bottom: 30px;
+        height: auto;
+        margin-bottom: 20px;
     }
 
-    .recipeCreateImage {
-        order: 2;
+    .recipeDetailImage {
         width: 100%;
-        height: 300px;
-        margin-bottom: 30px;
+        height: auto;
+        max-height: none;
+        aspect-ratio: 16 / 9;
+        margin-bottom: 20px;
     }
 
     .recipeDetailDescription,
     .recipeDetailDescriptionCreateRecipe {
-        order: 3;
         width: 100%;
         height: auto;
-        min-height: 200px;
-        margin-bottom: 30px;
+        min-height: 160px;
+        margin-bottom: 20px;
         border: 2px solid black;
-        padding: 5px;
+        padding: 8px;
         overflow-y: visible;
+    }
+
+    .recipeDetailInfo2 {
+        width: 100%;
+        height: auto;
+        margin-top: 0;
+        margin-bottom: 20px;
+        padding: 8px;
+    }
+
+    .recipeDetailPart {
+        order: initial;
+        overflow-y: visible;
+        padding: 10px;
     }
 
     .recipeDetailDescriptionTextBoxContainer {
@@ -1109,8 +1217,11 @@ header {
         min-height: 150px;
     }
 
-    .recipeDetailPart {
-        order: 10;
+    .recipeCreateImage {
+        order: 2;
+        width: 100%;
+        height: 300px;
+        margin-bottom: 30px;
     }
 
     .createRecipeButtonDiv {
@@ -1134,91 +1245,80 @@ header {
         height: auto;
         resize: vertical;
     }
-}
 
-.toggleSwitch {
-    display: none;
-}
-
-.customDropdown {
-    position: relative;
-    width: 140px;
-}
-
-.dropdownButton {
-    width: 100%;
-    height: 40px;
-    padding: 6px 10px;
-    font-size: 13px;
-    font-family: "JetBrainsMonoNL NF", monospace;
-    font-weight: 600;
-    color: #000;
-    background-color: #F2EEE9;
-    border: 4px solid #000;
-    border-radius: 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    user-select: none;
-    box-sizing: border-box;
-}
-
-    .dropdownButton:hover {
-        background-color: #dedad5;
+    /* CreateRecipe specific order/layout (form has .no-layout-form) */
+    .no-layout-form .recipeDetailLeft {
+        display: contents;
     }
 
-.dropdownMenu {
-    position: absolute;
-    top: calc(100% + 0px);
-    left: 0;
-    right: 0;
-    background-color: #F2EEE9;
-    border: 4px solid #000;
-    border-top: none;
-    max-height: 150px;
-    overflow-y: auto;
-    z-index: 1000;
-    display: none;
+    .no-layout-form .recipeDetailInfo {
+        order: 1;
+    }
+
+    .no-layout-form .recipeCreateImage {
+        order: 2;
+    }
+
+    .no-layout-form .recipeDetailDescription,
+    .no-layout-form .recipeDetailDescriptionCreateRecipe {
+        order: 3;
+    }
+
+    .no-layout-form .recipeDetailPart {
+        order: 10;
+    }
+
+    .no-layout-form .createRecipeButtonDiv {
+        order: 999;
+    }
 }
-
-    .dropdownMenu.open {
-        display: block;
-    }
-
-.dropdownOption {
-    padding: 10px 12px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    font-family: "JetBrainsMonoNL NF", monospace;
-    font-weight: 600;
-}
-
-    .dropdownOption:last-child {
-        border-bottom: none;
-    }
-
-    .dropdownOption:hover {
-        background-color: #ae74cc;
-        color: white;
-    }
 
 /* Mobile layout */
 @media (max-width: 768px) {
-    .vyhledavaniReceptu {
-        max-width: 180px;
+    header,
+    .headerDiv {
+        height: 64px;
+    }
+
+    .headerDiv {
+        justify-content: flex-start;
+        padding: 0 10px;
+    }
+
+    .searchContainer {
+        width: calc(100% - 56px);
+        gap: 6px;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    .searchTypeContainer {
+        position: relative;
+        right: auto;
         height: 40px;
-        padding: 8px;
+        display: flex;
+        align-items: center;
+        z-index: 1201;
+    }
+
+    .input-container {
+        flex: 1;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .vyhledavaniReceptu {
+        width: 100%;
+        max-width: none;
+        height: 40px;
+        padding: 8px 34px 8px 8px;
         font-size: 14px;
         box-shadow: 2px 2px 0 #000;
     }
 
     .customDropdown {
-        width: 100px;
+        width: 90px;
+        z-index: 1201;
     }
 
     .dropdownButton {
@@ -1230,7 +1330,12 @@ header {
     }
 
     .dropdownMenu {
+        top: calc(100% + 2px);
+        left: 0;
+        right: auto;
+        min-width: 110px;
         border: 2px solid #000;
+        z-index: 1202;
     }
 
     .dropdownOption {
@@ -1238,34 +1343,137 @@ header {
         font-size: 12px;
     }
 
-    .searchContainer {
-        gap: 8px;
-    }
-
     .vyhledavaniLupa {
-        padding-left: 3px;
+        margin-left: -34px;
+        padding-left: 0;
     }
 
     .iconSearch {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
     }
 
     .accountIcon {
-        width: 40px;
-        height: 40px;
+        right: 10px;
+        width: 36px;
+        height: 36px;
+        z-index: 1200;
     }
 
-        .accountIcon img {
-            width: 40px;
-            height: 40px;
-        }
+    .accountIcon img {
+        width: 36px;
+        height: 36px;
+    }
 
-        .accountIcon .accountAvatar {
-            width: 40px;
-            height: 40px;
-            font-size: 16px;
-        }
+    .accountIcon .accountAvatar {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+
+    .sidebar {
+        top: auto;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 58px;
+        border-right: none;
+        border-top: 2px solid black;
+        padding-top: 0;
+        flex-direction: row;
+        justify-content: center;
+        z-index: 998;
+    }
+
+    .sideNav {
+        width: 100%;
+        height: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        padding: 0 10px;
+    }
+
+    .sideNav a img {
+        width: 28px;
+        height: 28px;
+        margin-top: 0;
+    }
+
+    .signOut {
+        display: none;
+    }
+
+    .pouzitelnyView {
+        margin-top: 64px;
+        margin-left: 0;
+        width: 100%;
+        height: auto;
+        min-height: calc(100vh - 64px);
+        padding: 14px 12px calc(16px + 58px + env(safe-area-inset-bottom)) 12px;
+        overflow-y: visible;
+    }
+
+    .recipeDetailInfo h3,
+    .recipeDetailPart h3 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .recipeDetailImage {
+        aspect-ratio: 4 / 3;
+        margin-bottom: 14px;
+    }
+
+    .recipeDetailImageStars {
+        left: 8px;
+        bottom: 6px;
+        padding: 3px 6px;
+    }
+
+    .recipeDetailImageStars label {
+        font-size: 22px;
+    }
+
+    .recipeDetailDescription,
+    .recipeDetailInfo2,
+    .recipeDetailPart {
+        margin-bottom: 14px;
+    }
+
+    .homeColumns {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .homeRecipeMiniCard {
+        grid-template-columns: 120px 1fr;
+        min-height: 108px;
+    }
+
+    .homeRecipeMiniImage {
+        min-height: 108px;
+    }
+
+    .recipeGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .recipeCard {
+        width: 100%;
+        max-width: none;
+        height: 210px;
+    }
+
+    .recipeCardName h5 {
+        font-size: 13px;
+    }
+
+    .recipeCardCreator h6,
+    .recipeCardCategory h6 {
+        font-size: 10px;
+    }
 }
 
 .tooltip-inner {
@@ -1360,4 +1568,131 @@ header {
 
 .recipeRatingToast.error {
     color: #c0392b;
+}
+
+.homeColumns {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    gap: 24px;
+    align-items: start;
+}
+
+.homeColumnCard {
+    border: 2px solid black;
+    background-color: #ebe5df;
+    box-shadow: 4px 4px 0 #000;
+    padding: 14px;
+    min-height: 260px;
+
+}
+
+.homeColumnCard h4 {
+    margin-bottom: 12px;
+    font-size: 18px;
+}
+
+.homeRecipeList {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.homeRecipeList li {
+    margin-bottom: 8px;
+}
+
+.homeRecipeList a {
+    color: #000;
+    text-decoration: none;
+}
+
+.homeRecipeList a:hover {
+    color: #ae74cc;
+    text-decoration: underline;
+}
+
+.toggleSwitch {
+    display: none;
+}
+
+.customDropdown {
+    position: relative;
+    width: 140px;
+}
+
+.dropdownButton {
+    width: 100%;
+    height: 40px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-family: "JetBrainsMonoNL NF", monospace;
+    font-weight: 600;
+    color: #000;
+    background-color: #F2EEE9;
+    border: 4px solid #000;
+    border-radius: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    user-select: none;
+    box-sizing: border-box;
+}
+
+.dropdownButton:hover {
+    background-color: #dedad5;
+}
+
+.dropdownMenu {
+    position: absolute;
+    top: calc(100% + 0px);
+    left: 0;
+    right: 0;
+    background-color: #F2EEE9;
+    border: 4px solid #000;
+    border-top: none;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.dropdownMenu.open {
+    display: block;
+}
+
+.dropdownOption {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-family: "JetBrainsMonoNL NF", monospace;
+    font-weight: 600;
+}
+
+.dropdownOption:last-child {
+    border-bottom: none;
+}
+
+.dropdownOption:hover {
+    background-color: #ae74cc;
+    color: white;
+}
+
+/* Mobile layout */
+
+.no-layout-form {
+    display: contents;
+}
+
+@supports not (display: contents) {
+    .no-layout-form {
+        display: block;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
 }

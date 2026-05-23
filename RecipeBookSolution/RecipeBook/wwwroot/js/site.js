@@ -55,28 +55,33 @@ document.addEventListener('DOMContentLoaded', function () {
     const dropdownMenu = document.querySelector('#dropdownMenu');
     const dropdownOptions = document.querySelectorAll('.dropdownOption');
     const searchTypeSelect = document.querySelector('#searchType');
+    const dropdownWrapper = document.querySelector('.customDropdown');
 
-    if (dropdownButton) {
-        dropdownButton.addEventListener('click', function() {
+    if (dropdownButton && dropdownMenu && searchTypeSelect && dropdownWrapper) {
+        dropdownButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
             dropdownMenu.classList.toggle('open');
         });
-    }
 
-    dropdownOptions.forEach(option => {
-        option.addEventListener('click', function() {
-            const value = this.dataset.value;
-            dropdownButton.textContent = this.textContent;
-            searchTypeSelect.value = value;
-            dropdownMenu.classList.remove('open');
+        dropdownOptions.forEach(option => {
+            option.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const value = this.dataset.value;
+                dropdownButton.textContent = this.textContent;
+                searchTypeSelect.value = value;
+                dropdownMenu.classList.remove('open');
+            });
         });
-    });
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-        if (e.target !== dropdownButton && !dropdownMenu.contains(e.target)) {
-            dropdownMenu.classList.remove('open');
-        }
-    });
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!dropdownWrapper.contains(e.target)) {
+                dropdownMenu.classList.remove('open');
+            }
+        });
+    }
 
     // Search functionality with autocomplete
     const searchInput = document.querySelector('#searchInput');

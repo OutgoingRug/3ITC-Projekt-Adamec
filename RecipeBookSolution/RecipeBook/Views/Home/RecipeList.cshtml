@@ -18,14 +18,14 @@
             <div class="recipeCardImage">
                 @{
 
-                    var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", item.Id.ToString() + ".jpg");
+                    var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", "recept_" + item.Id.ToString() + ".jpg");
                     var imgExists = System.IO.File.Exists(imgPhysicalPath);
                     var hasRating = recipeRatingCounts.TryGetValue(item.Id, out var recipeRatingCount) && recipeRatingCount > 0;
                     var averageRating = recipeRatingAverages.TryGetValue(item.Id, out var recipeAverage) ? recipeAverage : 0;
                 }
                 @if (imgExists)
                 {
-                    <img src="@Url.Content($"~/images/recipes/{item.Id}.jpg")" alt="Recipe image" />
+                    <img src="@Url.Content($"~/images/recipes/recept_{item.Id}.jpg")" alt="Recipe image" />
                 }
                 else
                 {

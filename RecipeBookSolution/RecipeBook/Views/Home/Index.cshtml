@@ -1,11 +1,115 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Hosting
+@using RecipeBook.Models.DatabaseModels
+@inject IWebHostEnvironment env
+@{
     ViewData["Title"] = "Home Page";
+
+    var randomRecipes = ViewBag.RandomRecipes as List<Recipe> ?? new List<Recipe>();
+    var newestRecipes = ViewBag.NewestRecipes as List<Recipe> ?? new List<Recipe>();
+    var mostFavoritedRecipes = ViewBag.MostFavoritedRecipes as List<Recipe> ?? new List<Recipe>();
 }
 
-<div class="pouzitelnyViewParent">
-</div>
-<div class="pouzitelnyViewParent">
-</div>
-<div class="pouzitelnyViewParent">
+<div class="homeColumns">
+    <section>
+        <h4 class="homeColumnTitle">Náhodné recepty</h4>
+        <div class="homeRecipeStack">
+            @if (randomRecipes.Count == 0)
+            {
+                <div class="homeEmptyState">Žádné recepty.</div>
+            }
+            else
+            {
+                @foreach (var recipe in randomRecipes)
+                {
+                    var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", "recept_" + recipe.Id.ToString() + ".jpg");
+                    var imgExists = System.IO.File.Exists(imgPhysicalPath);
+                    <a class="homeRecipeMiniCard" href="/home/recipedetail/@recipe.Id">
+                        <div class="homeRecipeMiniImage">
+                            @if (imgExists)
+                            {
+                                <img src="@Url.Content($"~/images/recipes/recept_{recipe.Id}.jpg")" alt="Recipe image" />
+                            }
+                            else
+                            {
+                                <img src="~/img/food-wide.png" alt="Recipe image" />
+                            }
+                        </div>
+                        <div class="homeRecipeMiniBody">
+                            <div class="homeRecipeMiniTitle">@recipe.Title</div>
+                            <div class="homeRecipeMiniMeta">Otevřít detail</div>
+                        </div>
+                    </a>
+                }
+            }
+        </div>
+    </section>
+
+    <section>
+        <h4 class="homeColumnTitle">Nejnovější recepty</h4>
+        <div class="homeRecipeStack">
+            @if (newestRecipes.Count == 0)
+            {
+                <div class="homeEmptyState">Žádné recepty.</div>
+            }
+            else
+            {
+                @foreach (var recipe in newestRecipes)
+                {
+                    var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", "recept_" + recipe.Id.ToString() + ".jpg");
+                    var imgExists = System.IO.File.Exists(imgPhysicalPath);
+                    <a class="homeRecipeMiniCard" href="/home/recipedetail/@recipe.Id">
+                        <div class="homeRecipeMiniImage">
+                            @if (imgExists)
+                            {
+                                <img src="@Url.Content($"~/images/recipes/recept_{recipe.Id}.jpg")" alt="Recipe image" />
+                            }
+                            else
+                            {
+                                <img src="~/img/food-wide.png" alt="Recipe image" />
+                            }
+                        </div>
+                        <div class="homeRecipeMiniBody">
+                            <div class="homeRecipeMiniTitle">@recipe.Title</div>
+                            <div class="homeRecipeMiniMeta">@(recipe.CreatedAt?.ToString("dd.MM.yyyy") ?? "Bez data")</div>
+                        </div>
+                    </a>
+                }
+            }
+        </div>
+    </section>
+
+    <section>
+        <h4 class="homeColumnTitle">Nejoblíbenější recepty</h4>
+        <div class="homeRecipeStack">
+            @if (mostFavoritedRecipes.Count == 0)
+            {
+                <div class="homeEmptyState">Zatím bez oblíbených.</div>
+            }
+            else
+            {
+                @foreach (var recipe in mostFavoritedRecipes)
+                {
+                    var imgPhysicalPath = System.IO.Path.Combine(env.WebRootPath ?? string.Empty, "images", "recipes", recipe.Id + ".jpg");
+                    var imgExists = System.IO.File.Exists(imgPhysicalPath);
+                    <a class="homeRecipeMiniCard" href="/home/recipedetail/@recipe.Id">
+                        <div class="homeRecipeMiniImage">
+                            @if (imgExists)
+                            {
+                                <img src="@Url.Content($"~/images/recipes/{recipe.Id}.jpg")" alt="Recipe image" />
+                            }
+                            else
+                            {
+                                <img src="~/img/food-wide.png" alt="Recipe image" />
+                            }
+                        </div>
+                        <div class="homeRecipeMiniBody">
+                            <div class="homeRecipeMiniTitle">@recipe.Title</div>
+                            <div class="homeRecipeMiniMeta">Oblíbený recept</div>
+                        </div>
+                    </a>
+                }
+            }
+        </div>
+    </section>
 </div>
 

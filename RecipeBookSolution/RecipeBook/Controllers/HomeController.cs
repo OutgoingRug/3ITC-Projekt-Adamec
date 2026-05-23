@@ -38,6 +38,39 @@ namespace RecipeBook.Controllers
 
         public IActionResult Index()
         {
+            var randomRecipes = _dbContext.Recipes
+                .Include(r => r.Category)
+                .AsNoTracking()
+                .OrderBy(r => Guid.NewGuid())
+                .Take(5)
+                .ToList();
+
+            var newestRecipes = _dbContext.Recipes
+                .Include(r => r.Category)
+                .AsNoTracking()
+                .OrderByDescending(r => r.CreatedAt ?? DateTime.MinValue)
+                .ThenByDescending(r => r.Id)
+                .Take(5)
+                .ToList();
+
+            var mostFavoritedRecipes = _dbContext.Favorites
+                .AsNoTracking()
+                .GroupBy(f => f.RecipeId)
+                .Select(g => new { RecipeId = g.Key, FavoriteCount = g.Count() })
+                .Join(_dbContext.Recipes.Include(r => r.Category).AsNoTracking(),
+                    f => f.RecipeId,
+                    r => r.Id,
+                    (f, r) => new { Recipe = r, f.FavoriteCount })
+                .OrderByDescending(x => x.FavoriteCount)
+                .ThenBy(x => x.Recipe.Title)
+                .Take(5)
+                .Select(x => x.Recipe)
+                .ToList();
+
+            ViewBag.RandomRecipes = randomRecipes;
+            ViewBag.NewestRecipes = newestRecipes;
+            ViewBag.MostFavoritedRecipes = mostFavoritedRecipes;
+
             return View();
         }
 
@@ -77,9 +110,11 @@ namespace RecipeBook.Controllers
         private SelectList GeMainCategoriesSelectList()
         {
             var seznamKategorií = _dbContext.Categories
-                                        .Where(c => c.ParentCategoryId == null)     
-                                        .OrderBy(c => c.Name)
-                                        .ToList();
+                                .Where(c => c.ParentCategoryId == null)
+                                .OrderBy(c => c.Description)
+                                .ThenBy(c => c.Name)
+                                .Select(c => new { c.Id, Name = c.Description + " - " + c.Name })
+                                .ToList();
             return new SelectList(seznamKategorií, "Id", "Name");
         }
 
