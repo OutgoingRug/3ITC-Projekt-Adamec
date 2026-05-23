@@ -643,6 +643,25 @@ header {
     min-width: 0;
 }
 
+@media (max-width: 1200px) {
+    .categoriesColumns {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .categoriesColumns {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .categoriesColumns {
+        grid-template-columns: 1fr;
+    }
+}
+
 .categoryColumnTitle {
     font-family: "JetBrainsMonoNL NF", monospace;
     font-weight: 700;
