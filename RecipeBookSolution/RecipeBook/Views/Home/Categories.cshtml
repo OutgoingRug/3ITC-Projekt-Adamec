@@ -9,7 +9,7 @@
         {
             <a class="category-link" href="@Url.Action("RecipeList", "Home", new { id = item.Id })" title="Zobrazit recepty v @item.Name">
                 <div class="categoryCard">
-                    <div class="categoryName">@item.Name</div>
+                    <div class="categoryName">@item.Description: @item.Name</div>
                     <div class="categoryMeta">@item.RecipeCount @(item.RecipeCount == 1 ? "recept" : item.RecipeCount >= 2 && item.RecipeCount <= 4 ? "recepty" : "receptů")</div>
                 </div>
             </a>

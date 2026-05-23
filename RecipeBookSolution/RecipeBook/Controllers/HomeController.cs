@@ -83,6 +83,7 @@ namespace RecipeBook.Controllers
                                     .Select(c => new 
                                     {
                                         Id = c.Id,
+                                        Description = c.Description,
                                         Name = c.Name,
                                         RecipeCount = _dbContext.Recipes.Count(r => r.CategoryId == c.Id)
                                     })
