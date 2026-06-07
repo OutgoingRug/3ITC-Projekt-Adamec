@@ -631,7 +631,7 @@ header {
 .categoriesColumns {
     width: 100%;
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 16px;
     padding: 12px 0;
     align-items: start;
@@ -642,18 +642,6 @@ header {
     flex-direction: column;
     gap: 12px;
     min-width: 0;
-}
-
-@media (max-width: 1500px) {
-    .categoriesColumns {
-        grid-template-columns: repeat(5, 1fr);
-    }
-}
-
-@media (max-width: 1200px) {
-    .categoriesColumns {
-        grid-template-columns: repeat(4, 1fr);
-    }
 }
 
 @media (max-width: 768px) {
@@ -676,10 +664,6 @@ header {
     padding-bottom: 6px;
     border-bottom: 2px solid black;
     text-align: center;
-    min-height: 2.6em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .categoryColumn .categoriesGrid {
@@ -1020,13 +1004,7 @@ header {
     display: flex;
     flex-direction: row;
     padding: 40px 80px 40px 80px;
-    overflow-y: auto;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.pouzitelnyView::-webkit-scrollbar {
-    display: none;
+    /*    overflow: hidden;*/
 }
 
 .recipeDetailPart {
@@ -1214,14 +1192,6 @@ header {
 .createRecipeButtonDiv {
     height: 60px;
     margin-top: 25px;
-}
-
-.homeColumns {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(220px, 1fr));
-    gap: 24px;
-    align-items: start;
 }
 
 /* Responsivita */
@@ -1480,24 +1450,27 @@ header {
         border-top: 2px solid black;
         padding-top: 0;
         flex-direction: row;
-        justify-content: space-evenly;
-        align-items: center;
+        justify-content: center;
         z-index: 998;
     }
 
     .sideNav {
-        display: contents;
+        width: 100%;
+        height: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        padding: 0 10px;
     }
 
-    .signOut {
-        display: contents;
-    }
-
-    .sideNav a img,
-    .signOut a img {
+    .sideNav a img {
         width: 28px;
         height: 28px;
         margin-top: 0;
+    }
+
+    .signOut {
+        display: none;
     }
 
     .pouzitelnyView {
@@ -1665,6 +1638,14 @@ header {
 
 .recipeRatingToast.error {
     color: #c0392b;
+}
+
+.homeColumns {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
+    gap: 24px;
+    align-items: start;
 }
 
 .homeColumnCard {

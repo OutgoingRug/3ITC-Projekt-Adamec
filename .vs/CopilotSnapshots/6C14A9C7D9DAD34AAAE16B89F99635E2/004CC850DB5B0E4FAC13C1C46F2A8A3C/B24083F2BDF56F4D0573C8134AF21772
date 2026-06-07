@@ -1480,20 +1480,36 @@ header {
         border-top: 2px solid black;
         padding-top: 0;
         flex-direction: row;
-        justify-content: space-evenly;
+        justify-content: space-between;
         align-items: center;
         z-index: 998;
     }
 
     .sideNav {
-        display: contents;
+        flex: 1;
+        height: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        padding: 0 10px;
+    }
+
+    .sideNav a img {
+        width: 28px;
+        height: 28px;
+        margin-top: 0;
     }
 
     .signOut {
-        display: contents;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-top: 0;
+        padding-bottom: 0;
+        padding-right: 10px;
+        gap: 10px;
     }
 
-    .sideNav a img,
     .signOut a img {
         width: 28px;
         height: 28px;
