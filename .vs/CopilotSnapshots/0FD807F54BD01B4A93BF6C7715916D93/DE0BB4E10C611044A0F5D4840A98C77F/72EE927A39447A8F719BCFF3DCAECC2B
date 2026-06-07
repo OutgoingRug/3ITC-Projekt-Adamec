@@ -101,7 +101,6 @@
             <a href="/home/Privacy" data-bs-toggle="tooltip" title="GDPR License">
                 <img src="~/img/Icon - GDPR License.svg" alt="Icon">
             </a>
-
             <a href="/home/SignOut" data-bs-toggle="tooltip" title="Odhlásit se">
                 <img src="~/img/Icon - Sign out.svg" alt="Icon">
             </a>

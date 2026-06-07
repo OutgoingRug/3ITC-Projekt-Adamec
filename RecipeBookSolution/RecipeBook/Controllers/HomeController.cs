@@ -53,15 +53,16 @@ namespace RecipeBook.Controllers
                 .Take(5)
                 .ToList();
 
-            var mostFavoritedRecipes = _dbContext.Favorites
+            var mostFavoritedRecipes = _dbContext.Ratings
                 .AsNoTracking()
-                .GroupBy(f => f.RecipeId)
-                .Select(g => new { RecipeId = g.Key, FavoriteCount = g.Count() })
+                .GroupBy(r => r.RecipeId)
+                .Select(g => new { RecipeId = g.Key, AverageStars = g.Average(x => x.Stars), RatingCount = g.Count() })
                 .Join(_dbContext.Recipes.Include(r => r.Category).AsNoTracking(),
-                    f => f.RecipeId,
-                    r => r.Id,
-                    (f, r) => new { Recipe = r, f.FavoriteCount })
-                .OrderByDescending(x => x.FavoriteCount)
+                    rating => rating.RecipeId,
+                    recipe => recipe.Id,
+                    (rating, recipe) => new { Recipe = recipe, rating.AverageStars, rating.RatingCount })
+                .OrderByDescending(x => x.AverageStars)
+                .ThenByDescending(x => x.RatingCount)
                 .ThenBy(x => x.Recipe.Title)
                 .Take(5)
                 .Select(x => x.Recipe)

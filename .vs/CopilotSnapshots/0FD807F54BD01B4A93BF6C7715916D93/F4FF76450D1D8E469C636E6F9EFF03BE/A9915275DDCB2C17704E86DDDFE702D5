@@ -2,8 +2,6 @@
     ViewData["Title"] = "Zásady zpracování osobních údajů";
 }
 
-<div class="privacyContainer">
-
 <h1>Zásady zpracování osobních údajů</h1>
 
 <h2>Úvod</h2>
@@ -243,5 +241,3 @@
     Pokud máte jakékoliv dotazy nebo chcete v souvislosti s některým z výše uvedených postupů uplatnit své právo,
     tak nás prosím kontaktujte.
 </p>
-
-</div>
